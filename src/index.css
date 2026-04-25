@@ -128,3 +128,43 @@
     @apply font-sans;
     }
 }
+
+@layer utilities {
+  @keyframes voice-wave {
+    0%, 100% {
+      transform: translateY(0) scaleY(0.52);
+      opacity: 0.45;
+    }
+    18% {
+      transform: translateY(-5px) scaleY(1.28);
+      opacity: 0.95;
+    }
+    38% {
+      transform: translateY(4px) scaleY(0.78);
+      opacity: 0.7;
+    }
+    62% {
+      transform: translateY(-2px) scaleY(1.05);
+      opacity: 0.85;
+    }
+    82% {
+      transform: translateY(3px) scaleY(0.62);
+      opacity: 0.55;
+    }
+  }
+
+  .voice-wave-bar {
+    animation-name: voice-wave;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+  }
+
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
