@@ -5,6 +5,7 @@ import { ConnectorOverlay } from "./ConnectorOverlay";
 import { ExplanationModal } from "./ExplanationModal";
 import { stepOneData } from "../data/stepOneData";
 import { stepTwoData } from "../data/stepTwoData";
+import { stepThreeData } from "../data/stepThreeData";
 import { explanationCards } from "../data/explanationCards";
 import { cn } from "@/lib/utils";
 
@@ -16,7 +17,9 @@ export function BehindScenesPane({ currentStep = 1 }) {
   const [lockedId, setLockedId] = useState(null);
   const [activeExplanationId, setActiveExplanationId] = useState(null);
   const isStepTwo = currentStep === 2;
-  const currentConnectors = isStepTwo ? stepTwoData.connectors : stepOneData.connectors;
+  const isStepThree = currentStep === 3;
+  const mapData = isStepThree ? stepThreeData : stepTwoData;
+  const currentConnectors = isStepThree ? stepThreeData.connectors : isStepTwo ? stepTwoData.connectors : stepOneData.connectors;
 
   const handleMouseEnter = (id) => setHoveredId(id);
   const handleMouseLeave = () => setHoveredId(null);
@@ -108,15 +111,15 @@ export function BehindScenesPane({ currentStep = 1 }) {
     return activeFlow.nodeIds.has(id);
   };
 
-  const renderStepTwoMap = () => (
+  const renderStructuredMap = (data) => (
     <>
       <ConnectorOverlay 
-        connectors={stepTwoData.connectors} 
+        connectors={data.connectors} 
         hoveredId={hoveredId || lockedId} 
         activeConnectorIds={activeFlow.connectorIds}
         containerRef={containerRef} 
       />
-      {stepTwoData.sections.map((section) => (
+      {data.sections.map((section) => (
         <section
           key={section.id}
           className={cn(
@@ -162,7 +165,7 @@ export function BehindScenesPane({ currentStep = 1 }) {
     <div ref={scrollRef} className="scrollbar-none flex flex-col h-full w-full bg-slate-950/40 p-8 relative overflow-y-auto">
       
       <div ref={containerRef} className="relative flex-grow flex flex-col gap-16 max-w-6xl mx-auto w-full pt-8 pb-16">
-        {isStepTwo ? renderStepTwoMap() : (
+        {isStepTwo || isStepThree ? renderStructuredMap(mapData) : (
         <>
         <ConnectorOverlay 
           connectors={stepOneData.connectors} 

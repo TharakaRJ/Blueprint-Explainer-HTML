@@ -31,6 +31,7 @@ const badgeStyles = {
 export function ArchitectureCard({ 
   id, 
   title, 
+  technicalLabel,
   subtitle, 
   badge, 
   type, 
@@ -57,7 +58,17 @@ export function ArchitectureCard({
       )}
     >
       <div className="flex items-start justify-between gap-2 mb-1">
-        <h3 className="text-sm font-semibold leading-tight pr-4">{title}</h3>
+        <div className="min-w-0 pr-3">
+          <h3 className="text-sm font-semibold leading-tight">{title}</h3>
+          {technicalLabel && (
+            <span className={cn(
+              "mt-2 inline-flex max-w-full rounded-full border px-2 py-0.5 text-[9px] font-mono uppercase tracking-wider",
+              badgeStyles[type]
+            )}>
+              {technicalLabel}
+            </span>
+          )}
+        </div>
         <div className="flex items-center gap-2 shrink-0 relative z-20">
           {badge && (
             <span className={cn(

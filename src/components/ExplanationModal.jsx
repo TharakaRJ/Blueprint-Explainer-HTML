@@ -457,6 +457,14 @@ export function ExplanationModal({ card, onClose, returnFocusTo }) {
         </div>
 
         <div className="mt-5 grid gap-5">
+          {view === "quick" && card.quickTitle && (
+            <div className={cn("rounded-xl border p-4", styles.border, styles.bg)}>
+              <h3 className="text-xl font-semibold text-white">{card.quickTitle}</h3>
+              <p className={cn("mt-2 inline-flex rounded-full border px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider", styles.border, styles.text)}>
+                {card.title}
+              </p>
+            </div>
+          )}
           {view === "blueprint" && (
             <div className={cn("rounded-xl border p-4", styles.border, styles.bg)}>
               <h3 className="text-lg font-semibold text-white">Blueprint details</h3>
