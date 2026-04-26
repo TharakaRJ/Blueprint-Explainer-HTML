@@ -30,7 +30,9 @@ export function IntelligenceMapPage({ currentStep = 1, onNavigate }) {
         <div>
           <h1 className="text-xl font-light tracking-wide text-slate-100">BEHIND-THE-SCENES INTELLIGENCE MAP</h1>
           <p className="text-sm text-slate-400 mt-1 tracking-wider uppercase">
-            {currentStep === 4
+            {currentStep === 5
+              ? "Step 5 — Adaptive Learning-Format Selection"
+              : currentStep === 4
               ? "Step 4 — Metacognitive Correction and Evidence-Based Self-Recalibration"
               : currentStep === 3
                 ? "Step 3 — Self-Evaluation & Rationale Inquiry"

@@ -11,14 +11,13 @@ export const stepTwoData = {
   processSteps: [
     { id: 1, title: "Initial Problem Framing", description: "Brief authentic prompt to test readiness." },
     { id: 2, title: "Cold Station Performance", description: "Deep-end experiential diagnostic event." },
-    { id: 3, title: "Self-Evaluation" },
+    { id: 3, title: "Self-Evaluation and Targeted Rationale Inquiry" },
     { id: 4, title: "Metacognitive Correction" },
-    { id: 5, title: "Detailed Feedback" },
-    { id: 6, title: "Adaptive Learning Format Selection" },
-    { id: 7, title: "Targeted Learning Experience" },
-    { id: 8, title: "Quick Check" },
-    { id: 9, title: "Re-entry Station" },
-    { id: 10, title: "Quick Outcome & Scheduling Engine" },
+    { id: 5, title: "Adaptive Learning-Format Selection" },
+    { id: 6, title: "Learning-Format Consumption and Learning-Experience Analytics" },
+    { id: 7, title: "Quick Check" },
+    { id: 8, title: "Re-Entry Station" },
+    { id: 9, title: "Adaptive Station Scheduling" },
   ],
   sections: [
     {

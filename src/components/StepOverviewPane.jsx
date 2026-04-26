@@ -1,6 +1,61 @@
 import { BookOpen, ArrowRight } from "lucide-react";
 
 export function StepOverviewPane({ currentStep = 1, onNavigate }) {
+  if (currentStep === 5) {
+    return (
+      <div className="flex flex-col h-full min-h-0 bg-slate-950/40 px-10 py-4 relative overflow-hidden">
+        <div className="flex items-center gap-2 mb-4 shrink-0">
+          <BookOpen className="w-5 h-5 text-slate-400" />
+          <h2 className="text-sm tracking-widest text-slate-300 uppercase">Step Overview</h2>
+        </div>
+
+        <div className="flex-1 min-h-0 flex flex-col justify-between max-w-3xl overflow-y-auto pr-1">
+          <div className="min-h-0">
+            <p className="mb-2 text-[10px] font-mono uppercase tracking-[0.24em] text-slate-500">Step 5 — Adaptive Learning-Format Selection</p>
+            <h1 className="text-[1.55rem] xl:text-[1.85rem] leading-tight font-light text-slate-100 mb-3 tracking-wide">Step 5: Adaptive Learning-Format Selection</h1>
+
+            <div className="space-y-3 text-slate-300 leading-6 text-[0.84rem] xl:text-[0.95rem]">
+              <p>
+                Step 5 turns the corrected support target from Step 4 into a ranked set of learning-format options. The system compares the learner’s current internal-process need, cognitive capacity, correction burden, learning momentum, format-response history, and the general properties of each available learning format.
+              </p>
+              <p>
+                The learner sees one recommended format, two alternatives, and the option to browse the full library.
+              </p>
+              <p>
+                <span className="font-semibold text-slate-100">What this step does:</span> It chooses how the learner should receive targeted support now.
+              </p>
+              <p>
+                <span className="font-semibold text-slate-100">Why it exists:</span> Accurate correction is not enough if the learner receives it through the wrong learning format. Step 5 reduces the mismatch between the learner’s true support need and the way the support is delivered.
+              </p>
+              <p>
+                <span className="font-semibold text-slate-100">What it must not do:</span> It must not become detailed feedback, a checklist report, a forced prescription, or Step 6 consumption analytics.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <div className="bg-blue-950/20 border border-blue-900/50 rounded-xl p-3 backdrop-blur-sm">
+              <h4 className="text-blue-400 font-semibold mb-1.5 uppercase tracking-wider text-xs">Key principle</h4>
+              <p className="text-blue-200/80 text-[0.84rem] leading-5">
+                The best format is not always the deepest, shortest, or most familiar format. It is the format the learner can use productively now to repair the internal process identified in Step 4.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-4 shrink-0 pb-1">
+            <button
+              onClick={onNavigate}
+              className="group relative inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold text-white transition-all duration-300 bg-teal-600/20 border border-teal-500/50 rounded-full hover:bg-teal-600/30 hover:shadow-[0_0_20px_rgba(20,184,166,0.3)] hover:-translate-y-0.5"
+            >
+              Continue to Step 5 Intelligence Map
+              <ArrowRight className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (currentStep === 4) {
     return (
       <div className="flex flex-col h-full min-h-0 bg-slate-950/40 px-10 py-4 relative overflow-hidden">

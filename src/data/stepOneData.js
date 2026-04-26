@@ -116,14 +116,13 @@ export const stepOneData = {
   ],
   processSteps: [
     { id: 1, title: "Initial Problem Framing", active: true, description: "Brief authentic prompt to test readiness." },
-    { id: 2, title: "Cold Station Performance", active: false },
-    { id: 3, title: "Self-Evaluation", active: false },
-    { id: 4, title: "Metacognitive Correction", active: false },
-    { id: 5, title: "Detailed Feedback", active: false },
-    { id: 6, title: "Adaptive Learning Format Selection", active: false },
-    { id: 7, title: "Targeted Learning Experience", active: false },
-    { id: 8, title: "Quick Check", active: false },
-    { id: 9, title: "Re-entry Station", active: false },
-    { id: 10, title: "Quick Outcome & Scheduling Engine", active: false },
+    { id: 2, title: "Cold Station Performance", active: false, description: "Live OSCE-style performance without pre-teaching." },
+    { id: 3, title: "Self-Evaluation and Targeted Rationale Inquiry", active: false, description: "Open reflection first; targeted rationale questions second." },
+    { id: 4, title: "Metacognitive Correction", active: false, description: "Evidence-based self-recalibration before support routing." },
+    { id: 5, title: "Adaptive Learning-Format Selection", active: false, description: "Choose the format most likely to support the corrected internal process." },
+    { id: 6, title: "Learning-Format Consumption and Learning-Experience Analytics", active: false, description: "Use the selected format while learning-experience evidence is captured." },
+    { id: 7, title: "Quick Check", active: false, description: "Check whether the support changed usable understanding." },
+    { id: 8, title: "Re-Entry Station", active: false, description: "Test transfer back into station performance." },
+    { id: 9, title: "Adaptive Station Scheduling", active: false, description: "Choose the next station context from updated evidence." },
   ]
 };

@@ -7,6 +7,7 @@ import { stepOneData } from "../data/stepOneData";
 import { stepTwoData } from "../data/stepTwoData";
 import { stepThreeData } from "../data/stepThreeData";
 import { stepFourData } from "../data/stepFourData";
+import { stepFiveData } from "../data/stepFiveData";
 import { explanationCards } from "../data/explanationCards";
 import { cn } from "@/lib/utils";
 
@@ -20,8 +21,9 @@ export function BehindScenesPane({ currentStep = 1 }) {
   const isStepTwo = currentStep === 2;
   const isStepThree = currentStep === 3;
   const isStepFour = currentStep === 4;
-  const mapData = isStepFour ? stepFourData : isStepThree ? stepThreeData : stepTwoData;
-  const currentConnectors = isStepFour ? stepFourData.connectors : isStepThree ? stepThreeData.connectors : isStepTwo ? stepTwoData.connectors : stepOneData.connectors;
+  const isStepFive = currentStep === 5;
+  const mapData = isStepFive ? stepFiveData : isStepFour ? stepFourData : isStepThree ? stepThreeData : stepTwoData;
+  const currentConnectors = isStepFive ? stepFiveData.connectors : isStepFour ? stepFourData.connectors : isStepThree ? stepThreeData.connectors : isStepTwo ? stepTwoData.connectors : stepOneData.connectors;
 
   const handleMouseEnter = (id) => setHoveredId(id);
   const handleMouseLeave = () => setHoveredId(null);
@@ -167,7 +169,7 @@ export function BehindScenesPane({ currentStep = 1 }) {
     <div ref={scrollRef} className="scrollbar-none flex flex-col h-full w-full bg-slate-950/40 p-8 relative overflow-y-auto">
       
       <div ref={containerRef} className="relative flex-grow flex flex-col gap-16 max-w-6xl mx-auto w-full pt-8 pb-16">
-        {isStepTwo || isStepThree || isStepFour ? renderStructuredMap(mapData) : (
+        {isStepTwo || isStepThree || isStepFour || isStepFive ? renderStructuredMap(mapData) : (
         <>
         <ConnectorOverlay 
           connectors={stepOneData.connectors} 

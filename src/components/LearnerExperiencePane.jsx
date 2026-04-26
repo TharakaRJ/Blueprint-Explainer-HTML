@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Mic, MicOff, Maximize2 } from "lucide-react";
+import { ArrowRight, BookOpen, Mic, MicOff, Maximize2, SlidersHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function LearnerExperiencePane({ currentStep = 1 }) {
@@ -198,6 +198,134 @@ export function LearnerExperiencePane({ currentStep = 1 }) {
           >
             Continue toward Step 5 support selection
           </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 5) {
+    const formatStats = [
+      ["Cognitive load", "Medium"],
+      ["Time burden", "12 min"],
+      ["Content depth", "Applied"],
+      ["Interactivity", "Guided"],
+      ["Retrieval demand", "Moderate"],
+      ["Transfer value", "High"],
+    ];
+
+    return (
+      <div className="flex flex-col h-full min-h-0 bg-slate-950 px-6 py-5 relative">
+        <div className="flex items-center gap-2 shrink-0">
+          <Maximize2 className="w-5 h-5 text-slate-400" />
+          <h2 className="text-sm tracking-widest text-slate-300 uppercase">Learner Experience</h2>
+        </div>
+
+        <div className="flex-1 min-h-0 overflow-y-auto pr-1 pt-4 pb-1">
+          <div className="rounded-xl border border-cyan-500/25 bg-cyan-950/15 p-3 shadow-[0_0_22px_rgba(34,211,238,0.08)]">
+            <p className="text-sm leading-relaxed text-slate-200">
+              Based on the correction we just made, the next step is to choose the learning format that is most likely to help you use that correction.
+            </p>
+            <p className="mt-2 text-xs leading-relaxed text-slate-400">
+              I’ll show the format that currently looks like the best fit, plus two alternatives. You can choose any of them or browse the full library.
+            </p>
+          </div>
+
+          <div className="mt-4 grid gap-3">
+            <button
+              type="button"
+              className="w-full rounded-xl border border-teal-400/45 bg-teal-500/15 p-4 text-left shadow-[0_0_24px_rgba(20,184,166,0.14)] transition hover:bg-teal-500/20"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className="mb-2 inline-flex rounded-full border border-teal-300/40 bg-teal-300/10 px-2 py-0.5 text-[10px] font-mono uppercase tracking-[0.18em] text-teal-100">
+                    Recommended
+                  </div>
+                  <h3 className="text-base font-semibold text-white">Scenario Walkthrough</h3>
+                  <p className="mt-1 text-xs leading-relaxed text-slate-300">
+                    Helps practise converting deterioration cues into immediate action without requiring a long content-heavy review right now.
+                  </p>
+                </div>
+                <BookOpen className="mt-1 h-5 w-5 shrink-0 text-teal-200" />
+              </div>
+              <div className="mt-3 flex flex-wrap gap-1.5 text-[10px] text-teal-100/90">
+                {["12 min", "medium load", "applied depth", "guided"].map((item) => (
+                  <span key={item} className="rounded-full border border-teal-400/25 bg-teal-950/40 px-2 py-1">{item}</span>
+                ))}
+              </div>
+            </button>
+
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                ["Decision Tree", "Best for choosing the next action under pressure.", "8 min", "low-medium load"],
+                ["Cue Recognition Examples", "Best for noticing clinical changes before acting.", "10 min", "visual examples"],
+              ].map(([title, description, time, load]) => (
+                <button
+                  key={title}
+                  type="button"
+                  className="rounded-xl border border-sky-500/25 bg-sky-950/15 p-3 text-left transition hover:bg-sky-950/25"
+                >
+                  <h4 className="text-sm font-semibold leading-snug text-sky-100">{title}</h4>
+                  <p className="mt-2 text-[11px] leading-relaxed text-slate-300">{description}</p>
+                  <div className="mt-3 flex flex-wrap gap-1 text-[9px] text-slate-300">
+                    <span className="rounded-full border border-slate-600/60 px-1.5 py-0.5">{time}</span>
+                    <span className="rounded-full border border-slate-600/60 px-1.5 py-0.5">{load}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-4 rounded-xl border border-violet-500/25 bg-slate-900/70 p-4">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-violet-300">Active format detail</p>
+                <h3 className="mt-1 text-base font-semibold text-white">Scenario Walkthrough</h3>
+              </div>
+              <SlidersHorizontal className="h-5 w-5 text-violet-200" />
+            </div>
+            <p className="mt-3 text-xs leading-relaxed text-slate-300">
+              A guided run-through of the same internal pattern: noticing the deterioration cue, choosing the next action, and carrying the corrected safety frame forward.
+            </p>
+            <p className="mt-2 text-xs leading-relaxed text-teal-100/90">
+              Recommended because this format helps practise converting deterioration cues into immediate action, without requiring a long content-heavy review right now.
+            </p>
+
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              {formatStats.map(([label, value]) => (
+                <div key={label} className="rounded-lg border border-slate-700/70 bg-slate-950/55 px-2.5 py-2">
+                  <p className="text-[9px] uppercase tracking-[0.16em] text-slate-500">{label}</p>
+                  <p className="mt-0.5 text-xs font-medium text-slate-200">{value}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-3 rounded-lg border border-slate-700/70 bg-slate-950/45 p-3">
+              <p className="text-[10px] font-mono uppercase tracking-[0.18em] text-slate-500">Personal fit estimate</p>
+              <p className="mt-1 text-xs leading-relaxed text-slate-300">
+                Not enough learner-specific data yet. This recommendation is based mainly on the current learning target, your current learning state, and the format’s general properties.
+              </p>
+            </div>
+
+            <div className="mt-3">
+              <p className="text-[10px] font-mono uppercase tracking-[0.18em] text-slate-500">Optional ratings</p>
+              <div className="mt-2 flex flex-wrap gap-1.5 text-[10px] text-slate-300">
+                {["Helpful", "Difficult", "Heavy", "Clear"].map((item) => (
+                  <span key={item} className="rounded-full border border-slate-600/70 px-2 py-1">{item}</span>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-4 flex items-center justify-between gap-3">
+              <button type="button" className="text-xs font-medium text-cyan-200 hover:text-cyan-100">View tutorial</button>
+              <button
+                type="button"
+                className="inline-flex items-center rounded-full border border-teal-400/45 bg-teal-500/20 px-4 py-2 text-xs font-semibold text-teal-50 transition hover:bg-teal-500/30"
+              >
+                Start selected format
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     );

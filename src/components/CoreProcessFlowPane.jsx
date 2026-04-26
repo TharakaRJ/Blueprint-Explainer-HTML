@@ -8,6 +8,7 @@ export function CoreProcessFlowPane({ currentStep = 1, onStepSelect }) {
     2: "Live OSCE-style performance without pre-teaching.",
     3: "Uncorrected reflection before feedback.",
     4: "Corrects the learner’s self-model using evidence.",
+    5: "Chooses the learning format most likely to repair the corrected internal process.",
   };
 
   return (
@@ -27,15 +28,20 @@ export function CoreProcessFlowPane({ currentStep = 1, onStepSelect }) {
         <div className="flex flex-col justify-between flex-1 min-h-0 relative z-10">
           {stepOneData.processSteps.map((step) => (
             (() => {
-              const title = step.id === 4 ? "Metacognitive Correction" : step.id === 3 ? "Self-Evaluation & Rationale Inquiry" : step.title;
-              const description = step.id === 4 ? "Evidence-based self-recalibration before support routing." : step.id === 3 ? "Open reflection first; targeted rationale questions second." : step.description || stepDescriptions[step.id];
+              const title =
+                step.id === 6
+                  ? "Learning-Format Consumption"
+                  : step.id === 3
+                    ? "Self-Evaluation & Rationale Inquiry"
+                    : step.title;
+              const description = step.description || stepDescriptions[step.id];
               return (
             <div 
               key={step.id} 
-              onClick={() => step.id <= 4 && onStepSelect?.(step.id)}
+              onClick={() => step.id <= 5 && onStepSelect?.(step.id)}
               className={cn(
                 "flex items-start gap-4 transition-all duration-300",
-                step.id <= 4 ? "cursor-pointer" : "",
+                step.id <= 5 ? "cursor-pointer" : "",
                 step.id === currentStep ? "opacity-100" : "opacity-40 hover:opacity-70"
               )}
             >
