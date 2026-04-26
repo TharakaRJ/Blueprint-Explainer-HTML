@@ -331,6 +331,214 @@ export function LearnerExperiencePane({ currentStep = 1 }) {
     );
   }
 
+  if (currentStep === 6) {
+    return (
+      <div className="flex flex-col h-full min-h-0 bg-slate-950 px-6 py-5 relative">
+        <div className="flex items-center gap-2 shrink-0">
+          <Maximize2 className="w-5 h-5 text-slate-400" />
+          <h2 className="text-sm tracking-widest text-slate-300 uppercase">Learner Experience</h2>
+        </div>
+
+        <div className="flex-1 min-h-0 overflow-y-auto pr-1 pt-4 pb-1">
+          <div className="rounded-xl border border-teal-500/30 bg-teal-950/15 p-4 shadow-[0_0_24px_rgba(20,184,166,0.12)]">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-teal-300">Selected format</p>
+                <h3 className="mt-1 text-lg font-semibold text-white">Scenario Walkthrough</h3>
+              </div>
+              <BookOpen className="h-5 w-5 text-teal-200" />
+            </div>
+            <p className="mt-3 text-xs leading-relaxed text-slate-300">
+              Learning target: Turning deterioration cues into immediate action
+            </p>
+            <div className="mt-3">
+              <div className="mb-2 flex items-center justify-between text-[10px] font-mono uppercase tracking-[0.16em] text-slate-500">
+                <span>Section 2 of 5</span>
+                <span>40%</span>
+              </div>
+              <div className="h-2 rounded-full bg-slate-800">
+                <div className="h-full w-2/5 rounded-full bg-teal-400 shadow-[0_0_12px_rgba(45,212,191,0.45)]" />
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 grid grid-cols-5 gap-1.5">
+            {["Cue", "Frame", "Action", "Check", "Carry"].map((item, index) => (
+              <button
+                key={item}
+                type="button"
+                className={cn(
+                  "rounded-lg border px-2 py-2 text-[10px] font-medium transition",
+                  index === 1
+                    ? "border-cyan-400/45 bg-cyan-500/15 text-cyan-100"
+                    : "border-slate-700/70 bg-slate-900/50 text-slate-400 hover:text-slate-200"
+                )}
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-4 rounded-xl border border-sky-500/25 bg-sky-950/15 p-4">
+            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-sky-300">Current section preview</p>
+            <p className="mt-3 text-sm leading-relaxed text-slate-100">
+              “When the patient becomes more unstable, your next action should be driven by the safety frame, not by continuing the diagnostic history routine.”
+            </p>
+            <div className="mt-4 rounded-lg border border-slate-700/70 bg-slate-950/50 p-3">
+              <p className="text-[10px] font-mono uppercase tracking-[0.18em] text-slate-500">Embedded interaction</p>
+              <h4 className="mt-2 text-sm font-semibold text-slate-100">Which cue should trigger immediate reassessment?</h4>
+              <div className="mt-3 grid gap-2">
+                {["New diaphoresis and light-headedness", "Longer pain history", "Family history detail"].map((option, index) => (
+                  <button
+                    key={option}
+                    type="button"
+                    className={cn(
+                      "rounded-lg border px-3 py-2 text-left text-xs transition",
+                      index === 0
+                        ? "border-teal-400/35 bg-teal-500/10 text-teal-50"
+                        : "border-slate-700/70 bg-slate-900/60 text-slate-300 hover:bg-slate-800/70"
+                    )}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 grid grid-cols-[1fr_auto] gap-3">
+            <button
+              type="button"
+              className="rounded-xl border border-slate-700/70 bg-slate-900/55 p-3 text-left transition hover:bg-slate-900"
+            >
+              <p className="text-xs font-semibold text-cyan-100">Need help using this format?</p>
+              <p className="mt-1 text-[11px] leading-relaxed text-slate-400">Open a short tutorial without leaving the walkthrough.</p>
+            </button>
+            <button
+              type="button"
+              className="rounded-xl border border-slate-700/70 bg-slate-900/55 px-4 text-xs font-semibold text-slate-300 transition hover:bg-slate-900"
+            >
+              Pause
+            </button>
+          </div>
+
+          <button
+            type="button"
+            className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-teal-400/45 bg-teal-500/20 px-5 py-2.5 text-sm font-semibold text-teal-50 transition hover:bg-teal-500/30"
+          >
+            Continue to Quick Check
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 7) {
+    return (
+      <div className="flex flex-col h-full min-h-0 bg-slate-950 px-6 py-5 relative">
+        <div className="flex items-center gap-2 shrink-0">
+          <Maximize2 className="w-5 h-5 text-slate-400" />
+          <h2 className="text-sm tracking-widest text-slate-300 uppercase">Learner Experience</h2>
+        </div>
+
+        <div className="flex-1 min-h-0 overflow-y-auto pr-1 pt-4 pb-1">
+          <div className="rounded-xl border border-violet-500/30 bg-violet-950/15 p-4 shadow-[0_0_24px_rgba(139,92,246,0.12)]">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-[10px] font-mono uppercase tracking-[0.24em] text-violet-300">Quick Check</p>
+                <h3 className="mt-1 text-lg font-semibold text-white">One short check before the re-entry station</h3>
+              </div>
+              <span className="rounded-full border border-violet-300/35 bg-violet-300/10 px-2.5 py-1 text-[10px] font-mono uppercase tracking-[0.18em] text-violet-100">
+                Step 7 of 9
+              </span>
+            </div>
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {["Safety trigger", "cue-action", "concept access"].map((item) => (
+                <span key={item} className="rounded-full border border-cyan-400/25 bg-cyan-950/30 px-2 py-1 text-[10px] font-mono uppercase tracking-[0.14em] text-cyan-100">
+                  {item}
+                </span>
+              ))}
+            </div>
+            <p className="mt-3 text-sm leading-relaxed text-slate-200">
+              Quick check before the next station. This is not a score. It helps check whether the key idea is now accessible enough to use.
+            </p>
+          </div>
+
+          <div className="mt-4 rounded-xl border border-sky-500/25 bg-sky-950/15 p-4">
+            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-sky-300">Check prompt</p>
+            <h4 className="mt-2 text-base font-semibold leading-snug text-white">
+              The patient with chest pain becomes pale, sweaty, and hypotensive. What should your thinking switch to first?
+            </h4>
+            <div className="mt-4 grid gap-2">
+              {[
+                "More detailed pain history",
+                "Immediate safety reassessment",
+                "Reassurance only",
+                "Discharge advice",
+              ].map((option, index) => (
+                <button
+                  key={option}
+                  type="button"
+                  className={cn(
+                    "rounded-lg border px-3 py-2.5 text-left text-xs transition",
+                    index === 1
+                      ? "border-teal-400/45 bg-teal-500/15 text-teal-50 shadow-[0_0_14px_rgba(20,184,166,0.12)]"
+                      : "border-slate-700/70 bg-slate-900/55 text-slate-300 hover:bg-slate-800/70"
+                  )}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-4 rounded-xl border border-slate-700/70 bg-slate-900/55 p-3">
+            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-slate-500">Confidence tap</p>
+            <div className="mt-2 grid grid-cols-3 gap-2">
+              {["Sure", "Somewhat sure", "Not sure yet"].map((item, index) => (
+                <button
+                  key={item}
+                  type="button"
+                  className={cn(
+                    "rounded-full border px-2 py-2 text-[11px] font-medium transition",
+                    index === 0
+                      ? "border-teal-400/40 bg-teal-500/15 text-teal-50"
+                      : "border-slate-700/70 bg-slate-950/45 text-slate-300 hover:bg-slate-800/70"
+                  )}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-4 rounded-xl border border-emerald-500/30 bg-emerald-950/15 p-4">
+            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-emerald-300">Immediate feedback</p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-100">
+              Good. You identified the correct switch: when the patient deteriorates, the priority moves back to immediate safety reassessment. Take that trigger into the re-entry station.
+            </p>
+          </div>
+
+          <div className="mt-4 rounded-xl border border-amber-500/30 bg-amber-950/15 p-3">
+            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-amber-300">Quick reset</p>
+            <p className="mt-1 text-xs leading-relaxed text-amber-50/90">
+              Diagnosis tells you what may be happening. Instability tells you what must happen first.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-teal-400/45 bg-teal-500/20 px-5 py-2.5 text-sm font-semibold text-teal-50 transition hover:bg-teal-500/30"
+          >
+            Continue to Re-Entry Station
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col h-full min-h-0 bg-slate-950 px-6 py-5 relative">
       <div className="flex items-center gap-2 shrink-0">

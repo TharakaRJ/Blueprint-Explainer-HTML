@@ -1,6 +1,100 @@
 import { BookOpen, ArrowRight } from "lucide-react";
 
 export function StepOverviewPane({ currentStep = 1, onNavigate }) {
+  if (currentStep === 7) {
+    return (
+      <div className="flex flex-col h-full min-h-0 bg-slate-950/40 px-10 py-4 relative overflow-hidden">
+        <div className="flex items-center gap-2 mb-4 shrink-0">
+          <BookOpen className="w-5 h-5 text-slate-400" />
+          <h2 className="text-sm tracking-widest text-slate-300 uppercase">Step Overview</h2>
+        </div>
+
+        <div className="flex-1 min-h-0 flex flex-col justify-between max-w-3xl overflow-y-auto pr-1">
+          <div className="min-h-0">
+            <p className="mb-2 text-[10px] font-mono uppercase tracking-[0.24em] text-slate-500">Step 7 — Quick Check</p>
+            <h1 className="text-[1.55rem] xl:text-[1.85rem] leading-tight font-light text-slate-100 mb-3 tracking-wide">
+              Quick Check: Did the learning actually become usable?
+            </h1>
+
+            <div className="space-y-3 text-slate-300 leading-6 text-[0.84rem] xl:text-[0.95rem]">
+              <p>
+                Step 7 gives the learner a short, low-stakes check immediately after using the selected learning format. It does not score the learner and it does not run another OSCE station. It checks whether the corrected target is now accessible enough to take into the re-entry station.
+              </p>
+              <p>
+                Behind the scenes, the system reads what the learner consumed in Step 6, selects a narrow check target, captures the response, interprets retrieval and application, gives brief feedback, and prepares the Step 8 re-entry handoff.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <div className="bg-blue-950/20 border border-blue-900/50 rounded-xl p-3 backdrop-blur-sm">
+              <h4 className="text-blue-400 font-semibold mb-1.5 uppercase tracking-wider text-xs">Key principle</h4>
+              <p className="text-blue-200/80 text-[0.84rem] leading-5">
+                The answer is evidence of immediate accessibility, not a score or final judgement.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-4 shrink-0 pb-1">
+            <button
+              onClick={onNavigate}
+              className="group relative inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold text-white transition-all duration-300 bg-teal-600/20 border border-teal-500/50 rounded-full hover:bg-teal-600/30 hover:shadow-[0_0_20px_rgba(20,184,166,0.3)] hover:-translate-y-0.5"
+            >
+              Continue to Intelligence Map
+              <ArrowRight className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 6) {
+    return (
+      <div className="flex flex-col h-full min-h-0 bg-slate-950/40 px-10 py-4 relative overflow-hidden">
+        <div className="flex items-center gap-2 mb-4 shrink-0">
+          <BookOpen className="w-5 h-5 text-slate-400" />
+          <h2 className="text-sm tracking-widest text-slate-300 uppercase">Step Overview</h2>
+        </div>
+
+        <div className="flex-1 min-h-0 flex flex-col justify-between max-w-3xl overflow-y-auto pr-1">
+          <div className="min-h-0">
+            <p className="mb-2 text-[10px] font-mono uppercase tracking-[0.24em] text-slate-500">Step 6 — Learning-Format Consumption</p>
+            <h1 className="text-[1.55rem] xl:text-[1.85rem] leading-tight font-light text-slate-100 mb-3 tracking-wide">Learning-Format Consumption and Learning-Experience Analytics</h1>
+
+            <div className="space-y-3 text-slate-300 leading-6 text-[0.84rem] xl:text-[0.95rem]">
+              <p>
+                After the learner chooses a format, the system does not simply deliver content and wait for completion. It observes how the learner actually uses the format: what they open, skip, revisit, struggle with, complete, or abandon.
+              </p>
+              <p>
+                These behaviours are interpreted cautiously as evidence about learner-format fit, burden, format operation, stuck points, and format quality. Step 6 then prepares Step 7 to test whether the intended learning effect occurred.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <div className="bg-blue-950/20 border border-blue-900/50 rounded-xl p-3 backdrop-blur-sm">
+              <h4 className="text-blue-400 font-semibold mb-1.5 uppercase tracking-wider text-xs">Key principle</h4>
+              <p className="text-blue-200/80 text-[0.84rem] leading-5">
+                Consumption is not learning proof. Step 6 observes how the learner experiences the format, separates learner-state signals from format-quality problems, and prepares a clean Quick Check handoff.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-4 shrink-0 pb-1">
+            <button
+              onClick={onNavigate}
+              className="group relative inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold text-white transition-all duration-300 bg-teal-600/20 border border-teal-500/50 rounded-full hover:bg-teal-600/30 hover:shadow-[0_0_20px_rgba(20,184,166,0.3)] hover:-translate-y-0.5"
+            >
+              Continue to Step 6 Intelligence Map
+              <ArrowRight className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (currentStep === 5) {
     return (
       <div className="flex flex-col h-full min-h-0 bg-slate-950/40 px-10 py-4 relative overflow-hidden">

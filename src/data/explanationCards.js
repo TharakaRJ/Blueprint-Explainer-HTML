@@ -2,6 +2,8 @@ import { stepTwoExplanationCards } from "./stepTwoExplanationCards";
 import { stepThreeExplanationCards } from "./stepThreeExplanationCards";
 import { stepFourExplanationCards } from "./stepFourExplanationCards";
 import { stepFiveExplanationCards } from "./stepFiveExplanationCards";
+import { stepSixExplanationCards } from "./stepSixExplanationCards";
+import { stepSevenExplanationCards } from "./stepSevenExplanationCards";
 
 const flow = (...items) => items;
 
@@ -353,4 +355,6 @@ export const explanationCards = {
   ...stepThreeExplanationCards,
   ...stepFourExplanationCards,
   ...stepFiveExplanationCards,
+  ...stepSixExplanationCards,
+  ...stepSevenExplanationCards,
 };

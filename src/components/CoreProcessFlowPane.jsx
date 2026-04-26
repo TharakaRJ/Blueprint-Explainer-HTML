@@ -9,6 +9,8 @@ export function CoreProcessFlowPane({ currentStep = 1, onStepSelect }) {
     3: "Uncorrected reflection before feedback.",
     4: "Corrects the learner’s self-model using evidence.",
     5: "Chooses the learning format most likely to repair the corrected internal process.",
+    6: "Learner uses the selected format while experience evidence is interpreted cautiously.",
+    7: "Short low-stakes check of immediate target accessibility.",
   };
 
   return (
@@ -31,6 +33,8 @@ export function CoreProcessFlowPane({ currentStep = 1, onStepSelect }) {
               const title =
                 step.id === 6
                   ? "Learning-Format Consumption"
+                  : step.id === 7
+                    ? "Quick Check"
                   : step.id === 3
                     ? "Self-Evaluation & Rationale Inquiry"
                     : step.title;
@@ -38,17 +42,19 @@ export function CoreProcessFlowPane({ currentStep = 1, onStepSelect }) {
               return (
             <div 
               key={step.id} 
-              onClick={() => step.id <= 5 && onStepSelect?.(step.id)}
+              onClick={() => step.id <= 7 && onStepSelect?.(step.id)}
               className={cn(
                 "flex items-start gap-4 transition-all duration-300",
-                step.id <= 5 ? "cursor-pointer" : "",
-                step.id === currentStep ? "opacity-100" : "opacity-40 hover:opacity-70"
+                step.id <= 7 ? "cursor-pointer" : "",
+                step.id === currentStep ? "opacity-100" : step.id < currentStep ? "opacity-75 hover:opacity-90" : "opacity-40 hover:opacity-70"
               )}
             >
               <div className={cn(
                 "w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-mono border z-10 bg-slate-950",
                 step.id === currentStep 
                   ? "border-blue-400 text-blue-200 shadow-[0_0_12px_rgba(59,130,246,0.4)]" 
+                  : step.id < currentStep
+                  ? "border-teal-500/55 text-teal-200/80"
                   : "border-slate-700 text-slate-500"
               )}>
                 {step.id}
