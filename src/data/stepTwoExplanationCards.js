@@ -1,138 +1,104 @@
 const flow = (...items) => items;
 
-const quick = (plainTitle, technicalName, text, extra = []) => [
-  { type: "callout", title: plainTitle, text },
-  { type: "chips", title: "Technical name", items: [technicalName] },
-  ...extra,
-];
-
-const blueprint = ({ purpose, inputs = [], outputs = [], guardrails = [], connectorLogic = [] }) => [
-  { type: "text", title: "Purpose", text: purpose },
-  ...(inputs.length ? [{ type: "list", title: "Inputs", items: inputs }] : []),
-  ...(outputs.length ? [{ type: "list", title: "Outputs / feeds", items: outputs }] : []),
-  ...(connectorLogic.length ? [{ type: "flow", title: "Connector logic", flow: connectorLogic }] : []),
-  ...(guardrails.length ? [{ type: "list", title: "Guardrails", items: guardrails }] : []),
-];
-
-const card = ({ id, categoryLabel, title, subtitle, accent, status, quickTitle, quickViewLayoutType, quickViewContent, blueprintContent }) => ({
+const card = ({ id, categoryLabel, title, quickTitle, subtitle, accent = "blue", status, quickViewContent, blueprintContent }) => ({
   id,
   categoryLabel,
   title,
+  quickTitle,
   subtitle,
   accent,
   status,
-  quickTitle,
-  quickViewLayoutType,
+  quickViewLayoutType: "element-specific",
   quickViewContent,
   blueprintContent,
 });
 
-const dynamicCard = ({ id, title, subtitle, meaning, raises, feeds, guardrail, accent = "purple" }) =>
-  card({
-    id,
-    categoryLabel: "LEARNER DYNAMIC PERFORMANCE VARIABLE",
-    title,
-    subtitle,
-    accent,
-    quickTitle: meaning,
-    quickViewLayoutType: "live-state gauge",
-    quickViewContent: quick(meaning, title, meaning, [
-      { type: "plainGrid", title: "Live state reading", items: [["What changes it?", "", raises], ["What it feeds", "", feeds], ["Do not confuse it with", "", guardrail]] },
-    ]),
-    blueprintContent: blueprint({
-      purpose: meaning,
-      inputs: [raises],
-      outputs: [feeds],
-      guardrails: [guardrail],
-    }),
-  });
+const text = (title, value) => ({ type: "text", title, text: value });
+const callout = (title, value) => ({ type: "callout", title, text: value });
+const warning = (title, value) => ({ type: "warning", title, text: value });
+const list = (title, items) => ({ type: "list", title, items });
+const chips = (title, items) => ({ type: "chips", title, items });
+const miniFlow = (title, items) => ({ type: "flow", title, flow: items });
+const grid = (title, items) => ({ type: "plainGrid", title, items });
+const twoColumn = (title, leftTitle, leftItems, rightTitle, rightItems) => ({
+  type: "twoColumn",
+  title,
+  leftTitle,
+  leftItems,
+  rightTitle,
+  rightItems,
+});
+
+const quickExplainer = ({ selectedLearningFormat, shortExplanation, keyGuardrail }) => [
+  callout("Short explanation", shortExplanation),
+  text("Selected learning format / teaching structure", selectedLearningFormat),
+  warning("Key guardrail", keyGuardrail),
+];
+
+const blueprintDetails = ({
+  technicalName,
+  classification,
+  selectedLearningFormat,
+  internalDefinition,
+  whyItExists,
+  whatItReads,
+  whatItOutputs,
+  internalProcessHypothesisLens,
+  subcomponentsOrSubsignals,
+  dynamicStateEffects,
+  profileEffects,
+  engineEffects,
+  connectorLogic,
+  guardrails,
+  mustNotDoRules,
+}) => [
+  text("Technical name", technicalName),
+  text("Classification", classification),
+  text("Selected learning format", selectedLearningFormat),
+  callout("Internal definition", internalDefinition),
+  text("Why it exists", whyItExists),
+  text("What it reads", whatItReads),
+  text("What it outputs", whatItOutputs),
+  text("Internal-process hypothesis lens", internalProcessHypothesisLens),
+  text("Subcomponents / sub-signals", subcomponentsOrSubsignals),
+  text("Dynamic-state effects", dynamicStateEffects),
+  text("Profile effects", profileEffects),
+  text("Engine effects", engineEffects),
+  text("Connector logic", connectorLogic),
+  text("Guardrails", guardrails),
+  warning("Must-not-do rules", mustNotDoRules),
+];
 
 export const stepTwoExplanationCards = {
-  "step2-cold-station-encounter": card({
-    id: "step2-cold-station-encounter",
-    categoryLabel: "STATION REALITY LAYER",
-    title: "Cold OSCE Station Encounter",
-    subtitle: "The learner is now inside the live station.",
-    accent: "blue",
-    status: "ACTIVE",
-    quickTitle: "The learner is now inside the station.",
-    quickViewLayoutType: "live event + cold boundary",
-    quickViewContent: quick(
-      "The learner is now inside the station.",
-      "Cold OSCE Station Encounter",
-      "This is the live performance event. The learner is no longer explaining what they would do. They are now doing it inside a simulated OSCE encounter.",
-      [
-        { type: "warning", title: "Cold station rule", text: "The station remains cold: no pre-teaching, no hinting, no corrective framing." },
-        { type: "example", title: "Example", prompt: "A patient says, “The pain is getting worse. I feel sweaty and light-headed.”", response: "The learner acts inside the station.", reading: "The system watches what the learner does next, not what they would theoretically say later.", important: "This creates the observed performance layer for later comparison with Step 1." },
-      ]
-    ),
-    blueprintContent: blueprint({
-      purpose: "Expose the learner to authentic performance pressure.",
-      inputs: ["Step 1 baseline", "station blueprint", "patient opening state"],
-      outputs: ["learner speech/actions", "patient response events", "event trace"],
-      guardrails: ["no teaching", "no hints", "no learner-friendly patient simplification"],
-    }),
-  }),
-
   "step2-station-simulation-engine": card({
     id: "step2-station-simulation-engine",
     categoryLabel: "STATION REALITY LAYER",
     title: "Station Simulation Engine",
-    subtitle: "Runs patient state, cues, timing, and consequences.",
+    quickTitle: "What world is the learner reacting to?",
+    subtitle: "This creates the realistic station conditions that make internal learner-state signals visible: how the learner frames the encounter, which cues they notice, how safety pressure affects action, and whether they adapt when the clinical world changes.",
     accent: "cyan",
-    status: "RUNNING STATION",
-    quickTitle: "The station world is running.",
-    quickViewLayoutType: "world engine",
-    quickViewContent: quick("The station world is running.", "Station Simulation Engine", "This engine runs the simulated clinical world: the patient, cues, timing, deterioration, improvement, and consequences.", [
-      { type: "chips", title: "Subcomponents", items: ["Patient State Model", "Cue / Trigger Logic", "Consequence Mapping Logic", "Scenario Progression Logic", "Role Portrayal Model", "Station Blueprint Reference", "Simulation Authenticity Boundary"] },
-      { type: "warning", title: "Important", text: "It runs the station. It does not judge competence by itself." },
-    ]),
-    blueprintContent: blueprint({
-      purpose: "Run the simulated clinical station world.",
-      inputs: ["station blueprint", "learner actions", "patient state", "scenario timing"],
-      outputs: ["patient responses", "state changes", "cue events", "consequence records", "Live Evidence Ledger entries"],
-      guardrails: ["no teaching", "no hidden hints", "no patient-speech simplification", "no direct profile update"],
+    status: "RUNNING",
+    quickViewContent: quickExplainer({
+      selectedLearningFormat: "Input → simulated station state → cue/consequence → evidence pathway.",
+      shortExplanation: "This creates the realistic station conditions that make internal learner-state signals visible: how the learner frames the encounter, which cues they notice, how safety pressure affects action, and whether they adapt when the clinical world changes.",
+      keyGuardrail: "This engine runs the station world. It must not diagnose competence, teach during the station, simplify patient behaviour, or rescue learner performance.",
     }),
-  }),
-
-  "step2-simulated-interaction": card({
-    id: "step2-simulated-interaction",
-    categoryLabel: "STATION REALITY LAYER",
-    title: "Simulated Patient / Relative / Nurse Interaction",
-    subtitle: "In-character speech and behaviour remain realistic.",
-    accent: "blue",
-    status: "ACTIVE",
-    quickTitle: "The patient and team stay in character.",
-    quickViewLayoutType: "role interaction boundary",
-    quickViewContent: quick("The patient and team stay in character.", "Simulated Patient / Relative / Nurse Interaction", "This is the learner-facing clinical interaction inside the cold station. Speech can be vague, emotional, distressed, confused, or clinically messy because that is part of the station signal.", [
-      { type: "warning", title: "Boundary", text: "Learner-Centered Communication Layer does not rewrite in-character patient, relative, or nurse speech." },
-    ]),
-    blueprintContent: blueprint({
-      purpose: "Deliver realistic in-character station dialogue and cue behaviour.",
-      inputs: ["Station Simulation Engine", "Simulation Authenticity Boundary", "patient state", "learner speech/actions"],
-      outputs: ["patient/relative/nurse speech", "cue exposure", "distress or deterioration signals"],
-      guardrails: ["do not simplify patient wording for learner comfort", "do not insert hidden coaching"],
-    }),
-  }),
-
-  "step2-simulation-authenticity-boundary": card({
-    id: "step2-simulation-authenticity-boundary",
-    categoryLabel: "STATION REALITY LAYER",
-    title: "Simulation Authenticity Boundary",
-    subtitle: "Blocks hints and learner-friendly station simplification.",
-    accent: "cyan",
-    status: "PROTECTING REALISM",
-    quickTitle: "Keep the station real.",
-    quickViewLayoutType: "protects vs blocks split",
-    quickViewContent: quick("Keep the station real.", "Simulation Authenticity Boundary", "This boundary protects the cold station from becoming a tutorial. Patient, relative, and nurse speech must stay realistic, even if it is vague, emotional, confused, or difficult.", [
-      { type: "twoColumn", title: "Protects vs blocks", leftTitle: "Protects", leftItems: ["patient realism", "ambiguity", "emotional pressure", "time pressure", "realistic deterioration", "realistic consequences"], rightTitle: "Blocks", rightItems: ["hidden hints", "corrective prompts", "patient-speech simplification", "over-helpful nurse prompts", "learner-friendly rewriting of clinical ambiguity"] },
-    ]),
-    blueprintContent: blueprint({
-      purpose: "Protect in-character station realism.",
-      inputs: ["station blueprint", "role portrayal requirements"],
-      outputs: ["realistic patient/nurse/relative interaction constraints"],
-      connectorLogic: flow("Simulation Authenticity Boundary", "Station Simulation Engine", "Simulated Patient / Relative / Nurse Interaction"),
-      guardrails: ["applies to in-character station dialogue and station cues", "does not apply to post-station feedback or system transition messages", "does not connect to Learner-Centered Communication Layer as patient-speech rewriting"],
+    blueprintContent: blueprintDetails({
+      technicalName: "Station Simulation Engine",
+      classification: "simulation engine",
+      selectedLearningFormat: "input → station-state → consequence engine model",
+      internalDefinition: "Runs the live OSCE station environment: patient state, cues, timing, role portrayal, scenario progression, deterioration, improvement, and consequences.",
+      whyItExists: "It preserves the cold station as a realistic clinical event so that later analytics can interpret learner behaviour against the actual state of the simulated patient and scenario.",
+      whatItReads: "station blueprint rules; patient state model; role portrayal model; cue and trigger logic; scenario progression logic; learner speech and actions; consequence mapping logic; station endpoint rules.",
+      whatItOutputs: "patient responses; role behaviours; clinically realistic cues; state changes; deterioration or improvement; consequence events; station endpoint signals; event data for the Live Evidence Ledger.",
+      internalProcessHypothesisLens: "It does not infer the learner’s internal process directly. It supplies the realistic world against which later analytics infer task framing, safety schema, cue processing, retrieval-to-action conversion, adaptability, and pressure response.",
+      subcomponentsOrSubsignals: "Patient State Model; Role Portrayal Model; Cue / Trigger Logic; Scenario Progression Logic; Consequence Mapping Logic; Station Blueprint Reference; Simulation Authenticity Boundary.",
+      dynamicStateEffects: "Feeds the evidence that later updates Current Safety Risk State, Current Performance Stability, Current Retrieval-to-Action State, Current Cognitive Load Under Performance, and Current Simulation Validity State.",
+      profileEffects: "Does not update learner profiles directly. Its interpreted, validity-checked event evidence may later support Learner Profile and Learner Response to Station Profile updates.",
+      engineEffects: "Feeds the Live Evidence Ledger and provides station-state context for the Performance Diagnostic Engine, Safety-Critical Event Gate, Adaptive Learning Engine, Adaptive Station Scheduling Engine, and Learning Momentum Engine.",
+      connectorLogic: "Station Simulation Engine → patient state / cues / role portrayal / consequences → Live Evidence Ledger → analytics → dynamic variables → Performance Diagnostic Engine.",
+      guardrails: "Preserve realism. Allow mistakes to produce consequences. Maintain the Simulation Authenticity Boundary. Keep patient, relative, and nurse speech authentic to the station.",
+      mustNotDoRules: "Do not teach, hint, coach, simplify patient speech for learner comfort, interpret learner competence by itself, update profiles directly, or create a standalone Consequence Mapping Engine.",
     }),
   }),
 
@@ -140,19 +106,31 @@ export const stepTwoExplanationCards = {
     id: "step2-live-evidence-ledger",
     categoryLabel: "STATION REALITY LAYER",
     title: "Live Evidence Ledger",
-    subtitle: "Structured trace of actions, cues, state, timing, and validity.",
+    quickTitle: "What evidence can the system safely interpret?",
+    subtitle: "This protects internal interpretation by preserving exactly what happened, when it happened, what cues were available, what the patient state was, and how strongly each event supports a learner-state hypothesis.",
     accent: "cyan",
     status: "RECORDING",
-    quickTitle: "Everything important is recorded.",
-    quickViewLayoutType: "sample event row",
-    quickViewContent: quick("Everything important is recorded.", "Live Evidence Ledger", "This is the structured event record. It stores what happened, when it happened, what state the patient was in, and how strongly that event supports later interpretation.", [
-      { type: "table", title: "Sample row", columns: ["Time", "Learner action", "Patient state", "Consequence", "Signal", "Possible interpretation"], rows: [["07:12", "continues pain history", "BP low and patient clammy", "monitoring still not requested", "moderate safety-delay signal", "possible prioritisation issue"]] },
-    ]),
-    blueprintContent: blueprint({
-      purpose: "Record station events without turning them into profile truth.",
-      inputs: ["timestamp", "station phase", "learner action/speech", "patient cue", "patient state", "expected action window", "actual learner response", "consequence", "evidence type", "evidence strength", "simulation validity flag"],
-      outputs: ["performance analytics", "possible interpretation"],
-      guardrails: ["The ledger stores evidence. It is not the learner profile."],
+    quickViewContent: quickExplainer({
+      selectedLearningFormat: "Event → context → evidence strength → interpretation readiness model.",
+      shortExplanation: "This protects internal interpretation by preserving exactly what happened, when it happened, what cues were available, what the patient state was, and how strongly each event supports a learner-state hypothesis.",
+      keyGuardrail: "The ledger stores evidence. It must not become the learner profile or a checklist score.",
+    }),
+    blueprintContent: blueprintDetails({
+      technicalName: "Live Evidence Ledger",
+      classification: "evidence ledger",
+      selectedLearningFormat: "structured evidence trace model",
+      internalDefinition: "The structured event record of Step 2, storing timestamped learner actions, cues, patient state, consequences, evidence strength, internal-process hypotheses, and simulation-validity flags.",
+      whyItExists: "It prevents later interpretation from becoming vague, retrospective, or unsupported. It gives the system a traceable evidence base for adaptive diagnosis.",
+      whatItReads: "learner speech; learner actions; patient/system cues; cue availability; patient state; station phase; expected action windows; actual learner response; consequences; simulation validity signals.",
+      whatItOutputs: "structured evidence for all Step 2 analytics; safety-event evidence; Step 1–Step 2 comparison evidence; Step 3 self-evaluation comparison material; Step 4/5 feedback traceability; profile update evidence only after interpretation.",
+      internalProcessHypothesisLens: "The ledger preserves possible hypotheses without confirming them: task misframing, retrieval gap, retrieval-to-action gap, cue-processing failure, safety-schema weakness, cognitive overload, false certainty, underconfidence, or simulation contamination.",
+      subcomponentsOrSubsignals: "timestamp; station phase; learner action/speech; patient/system cue; cue availability; patient state; expected action window; actual learner response; consequence; evidence type; evidence strength; simulation validity flag; observed performance condition; internal-process hypotheses; alternative explanations; profile relevance.",
+      dynamicStateEffects: "Supplies event evidence to update Current Performance Stability, Current Safety Risk State, Current Retrieval-to-Action State, Current Cognitive Load Under Performance, and Current Simulation Validity State.",
+      profileEffects: "Does not update profiles directly. Interpreted, weighted, validity-checked evidence may later update Learner Profile, Learner Response to Station Profile, or Learner Engagement Profile where relevant.",
+      engineEffects: "Feeds all analytics, Performance Diagnostic Engine, Safety-Critical Event Gate, Post-Station Rationale & Inquiry Register, Step 3 self-evaluation comparison, Step 4 metacognitive correction, Step 5 feedback preparation, and later profile updates.",
+      connectorLogic: "Station Simulation Engine + learner speech/actions + cues → Live Evidence Ledger → analytics / Safety-Critical Event Gate / Performance Diagnostic Engine / Post-Station Rationale & Inquiry Register.",
+      guardrails: "Preserve evidence strength, cue availability, patient state, station phase, urgency, and simulation validity.",
+      mustNotDoRules: "Do not treat ledger entries as final competence. Do not average contradictory evidence away. Do not convert raw records into stable profile traits.",
     }),
   }),
 
@@ -160,19 +138,30 @@ export const stepTwoExplanationCards = {
     id: "step2-action-sequence-capture",
     categoryLabel: "LIVE PERFORMANCE ANALYTIC",
     title: "Action Sequence Capture",
-    subtitle: "What they do first, next, late, repeat, or miss.",
+    quickTitle: "What did the learner’s sequence reveal about their decision pathway?",
+    subtitle: "This uses the learner’s action order as evidence of their internal decision pathway: what they believed mattered first, where pressure changed the sequence, whether they followed a rigid script, and where knowledge failed to become action.",
     accent: "blue",
-    status: "ACTIVE",
-    quickTitle: "What did they do first, next, and late?",
-    quickViewLayoutType: "timeline",
-    quickViewContent: quick("What did they do first, next, and late?", "Action Sequence Capture", "This captures the learner’s live performance path: first action, order, delays, omissions, repetitions, premature actions, unsafe actions, and recovery.", [
-      { type: "flow", title: "Timeline example", flow: flow("Start", "asks history", "delays observations", "patient worsens", "requests ECG", "escalates late") },
-    ]),
-    blueprintContent: blueprint({
-      purpose: "Capture the learner’s live action sequence in station context.",
-      inputs: ["first action", "action order", "timing", "delays", "omissions", "repeated or premature actions", "spoken-action linkage"],
-      outputs: ["Current Performance Stability", "Clinical Prioritisation Under Pressure", "Performance Diagnostic Engine", "Step 1–Step 2 Alignment Check", "Learner Performance Profile"],
-      guardrails: ["Sequence must be interpreted in station context."],
+    quickViewContent: quickExplainer({
+      selectedLearningFormat: "Pattern-over-time model.",
+      shortExplanation: "This uses the learner’s action order as evidence of their internal decision pathway: what they believed mattered first, where pressure changed the sequence, whether they followed a rigid script, and where knowledge failed to become action.",
+      keyGuardrail: "Action order must be interpreted in station context. The same action can be appropriate in one phase and unsafe in another.",
+    }),
+    blueprintContent: blueprintDetails({
+      technicalName: "Action Sequence Capture",
+      classification: "behavioural sequence analytic",
+      selectedLearningFormat: "pattern-over-time model",
+      internalDefinition: "Records what the learner does, says, requests, delays, repeats, prematurely performs, or omits across the station timeline.",
+      whyItExists: "It supplies the foundational behavioural trace that lets the system infer the learner’s enacted task model and performance path under pressure.",
+      whatItReads: "first action; action order; action timing; delayed actions; omitted actions; repeated actions; premature actions; unsafe actions; non-action during important cue windows; action after deterioration; recovery after wrong action; spoken reasoning attached to action.",
+      whatItOutputs: "sequence evidence for Clinical Prioritisation Under Pressure, Current Performance Stability, Performance Diagnostic Engine, Step 1–Step 2 Alignment Check, and Learner Profile as weighted OSCE performance-pattern evidence.",
+      internalProcessHypothesisLens: "task-framing error; habitual script-following; clinical schema weakness; retrieval-to-action gap; cognitive overload; uncertainty avoidance; cue-processing failure; affective pressure response; interface friction.",
+      subcomponentsOrSubsignals: "first-action signal; order coherence; timing signal; delay signal; omission signal; repetition signal; premature-action signal; recovery-after-error signal; cue-window response signal.",
+      dynamicStateEffects: "Updates Current Performance Stability and may influence Current Safety Risk State, Current Retrieval-to-Action State, and Current Cognitive Load Under Performance when sequence behaviour indicates risk, conversion failure, or overload.",
+      profileEffects: "May contribute weighted evidence to Learner Profile, especially task-framing-to-action, retrieval-to-action, safety-risk, performance-stability, and support-need pathways.",
+      engineEffects: "Feeds Performance Diagnostic Engine, Adaptive Learning Engine, Adaptive Station Scheduling Engine, and Step 1–Step 2 Alignment Check.",
+      connectorLogic: "Learner speech/actions → Live Evidence Ledger → Action Sequence Capture → Clinical Prioritisation Under Pressure + Current Performance Stability + Performance Diagnostic Engine.",
+      guardrails: "Preserve alternative explanations. Interpret sequence against live patient state, cue availability, station phase, and simulation validity.",
+      mustNotDoRules: "Do not describe this as simple chronology only. Do not equate a missed or delayed action with absent knowledge. Do not make a stable trait from one sequence.",
     }),
   }),
 
@@ -180,289 +169,556 @@ export const stepTwoExplanationCards = {
     id: "step2-safety-stabilisation",
     categoryLabel: "LIVE PERFORMANCE ANALYTIC",
     title: "Safety & Stabilisation Behaviour",
-    subtitle: "Whether safety needs are recognised and acted on.",
-    accent: "green",
-    status: "ACTIVE",
     quickTitle: "Did they keep the patient safe?",
-    quickViewLayoutType: "safety gate",
-    quickViewContent: quick("Did they keep the patient safe?", "Safety & Stabilisation Behaviour", "This captures whether the learner recognises immediate safety needs and acts on them before the station becomes a routine diagnostic exercise.", [
-      { type: "chips", title: "Examples", items: ["requests monitoring", "starts ABCDE when appropriate", "recognises deterioration", "avoids contraindicated treatment", "escalates when needed"] },
-    ]),
-    blueprintContent: blueprint({
-      purpose: "Capture safety and stabilisation behaviour under pressure.",
-      inputs: ["ABCDE initiation", "monitoring request", "vital-sign awareness", "oxygen use when indicated", "IV/emergency support", "ECG/investigation timing", "escalation", "contraindication recognition", "deterioration response", "collapse management"],
-      outputs: ["Current Safety Risk State", "Safety-Critical Event Gate", "Performance Diagnostic Engine", "Learner Performance Profile", "Adaptive Learning Engine", "Adaptive Station Scheduling Engine"],
-      guardrails: ["Distinguish dangerous action, dangerous omission, delayed safety behaviour, incomplete safety behaviour, late correct safety behaviour, and platform-friction-related failure."],
-    }),
+    subtitle: "Checks how immediate patient safety is handled.",
+    accent: "cyan",
+    quickViewContent: [
+      callout("safety action / omission / delay distinction", "This checks whether the learner recognised and managed immediate safety needs before, during, and after diagnostic reasoning."),
+      chips("safety distinction", ["Unsafe action", "Unsafe omission", "Unsafe delay", "Incomplete stabilisation", "Late but correct recovery"]),
+      warning("Key guardrail", "Safety evidence has high priority, but it must still be interpreted with timing, patient state, pressure, and simulation validity."),
+    ],
+    blueprintContent: [
+      callout("Safety & Stabilisation Behaviour — blueprint details", "Identifies how the learner manages immediate safety needs during the cold station."),
+      list("Captures", ["ABCDE initiation where appropriate", "monitoring request", "vital-sign awareness", "oxygen use where clinically indicated", "IV access or emergency support where relevant", "ECG or urgent investigation timing", "escalation to senior/emergency team", "contraindication recognition", "avoidance of unsafe interventions", "response to deterioration", "management of collapse", "recovery after unsafe direction"]),
+      list("Safety signal types", ["protective action", "safety omission", "unsafe delay", "harmful action", "contraindication failure", "escalation failure", "deterioration non-response", "late but meaningful recovery", "simulation-contaminated safety event"]),
+      text("Internal-process interpretation", "Safety behaviour helps infer whether the learner is operating from a safety-first emergency schema, a routine-diagnostic schema, a memorised station script, a misconception, or pressure-driven fragmentation."),
+      list("Must not", ["reduce safety to checklist completion", "treat outcome alone as evidence without action/context linkage", "ignore simulation validity", "treat one safety miss as stable incompetence"]),
+      list("Outputs", ["Current Safety Risk State", "Safety-Critical Event Gate", "Performance Diagnostic Engine", "Adaptive Learning Engine", "Adaptive Station Scheduling Engine", "Learner Profile as weighted safety pattern evidence"]),
+      miniFlow("Connector logic", flow("Safety & Stabilisation Behaviour", "Current Safety Risk State", "Safety-Critical Event Gate", "Performance Diagnostic Engine")),
+    ],
   }),
 
   "step2-cue-recognition-response": card({
     id: "step2-cue-recognition-response",
     categoryLabel: "LIVE PERFORMANCE ANALYTIC",
     title: "Cue Recognition & Response",
-    subtitle: "Whether available cues change learner behaviour.",
-    accent: "blue",
-    status: "ACTIVE",
     quickTitle: "Did they respond to what the station showed them?",
-    quickViewLayoutType: "cue pipeline",
-    quickViewContent: quick("Did they respond to what the station showed them?", "Cue Recognition & Response", "This captures whether the learner notices and acts on important cues: distress, vital signs, deterioration, abnormal results, emotional cues, contradiction cues, or safety cues.", [
-      { type: "flow", title: "Cue pipeline", flow: flow("Cue appears", "learner notices", "learner interprets", "learner acts", "consequence") },
-    ]),
-    blueprintContent: blueprint({
-      purpose: "Measure whether available cues become learner response.",
-      inputs: ["cue exposure", "cue noticing", "cue interpretation", "cue-action conversion", "cue-action latency", "cue neglect", "cue misreading", "cue-driven recovery"],
-      outputs: ["Current Cue Responsiveness", "Cue → Action Latency Check", "Current Performance Stability", "Performance Diagnostic Engine", "Learner Response to Station Profile", "Adaptive Station Scheduling Engine"],
-      guardrails: ["Do not penalise missed cues unless the cue was actually available."],
-    }),
+    subtitle: "Follows what happens after a clinically meaningful cue.",
+    accent: "blue",
+    quickViewContent: [
+      callout("Cue pipeline", "This follows what happens after the station gives the learner a clinically meaningful cue."),
+      miniFlow("Cue pipeline", flow("Cue appears", "learner notices", "learner interprets", "learner acts", "consequence")),
+      text("Cue-action latency", "Delay matters only when the cue was actually available, clinically relevant, and time-sensitive."),
+      text("Internal-process meaning", "A missed cue may mean the learner did not notice it, noticed it but misread it, understood it but did not convert it into action, or stayed locked inside a rehearsed script that overrode the cue."),
+      warning("Guardrail", "Do not judge a missed cue unless the cue was available to the learner."),
+    ],
+    blueprintContent: [
+      callout("Cue Recognition & Response — blueprint details", "Captures whether the learner notices, interprets, and acts on station cues."),
+      list("Captures", ["cue exposure", "cue noticing", "cue interpretation", "cue-action conversion", "cue-action latency", "cue neglect", "cue misreading", "cue-driven recovery", "cue overridden by script", "response to deterioration cues", "response to emotional cues", "response to contradiction cues"]),
+      list("Cue categories", ["patient distress cue", "verbal cue", "non-verbal cue", "vital-sign cue", "investigation-result cue", "deterioration cue", "emotional cue", "safety cue", "contradiction cue"]),
+      text("Internal-process interpretation", "Cue response helps distinguish adaptive reasoning from memorised station performance. A learner who updates after cues is processing the scenario dynamically. A learner who ignores cues may be overloaded, script-locked, misframing the task, or failing to translate perception into action."),
+      list("Must not", ["penalise unavailable cues", "treat noticing without action as full cue response", "treat late action as equivalent to timely action", "ignore patient-state consequence"]),
+      list("Outputs", ["Performance Diagnostic Engine", "Learner Response to Station Profile", "Adaptive Station Scheduling Engine", "Post-Station Rationale & Inquiry Register when cue-response rationale is unclear"]),
+      miniFlow("Connector logic", flow("Live Evidence Ledger", "Cue Recognition & Response", "Performance Diagnostic Engine", "Learner Response to Station Profile")),
+    ],
   }),
 
   "step2-clinical-prioritisation": card({
     id: "step2-clinical-prioritisation",
     categoryLabel: "LIVE PERFORMANCE ANALYTIC",
     title: "Clinical Prioritisation Under Pressure",
-    subtitle: "Right action, right time, under live pressure.",
+    quickTitle: "Did the order make clinical sense?",
+    subtitle: "Interprets sequence against current risk and station demand.",
     accent: "blue",
-    status: "ACTIVE",
-    quickTitle: "Did they choose the right thing at the right time?",
-    quickViewLayoutType: "right action right time",
-    quickViewContent: quick("Did they choose the right thing at the right time?", "Clinical Prioritisation Under Pressure", "This captures whether the learner can prioritise correctly when the station is active and pressure is rising.", [
-      { type: "twoColumn", title: "Routine vs emergency flow", leftTitle: "Routine path", leftItems: ["long history first", "broad exploration", "slower synthesis"], rightTitle: "Emergency path", rightItems: ["safety", "stabilisation", "monitoring", "escalation", "focused information"] },
-    ]),
-    blueprintContent: blueprint({
-      purpose: "Interpret timing and prioritisation against the live station state.",
-      inputs: ["emergency vs routine framing", "stabilisation before detailed history", "safety before diagnosis", "urgent treatment before extended explanation", "escalation threshold", "focused information gathering", "over-history", "premature closure", "over-investigation before stabilisation", "task-balance control"],
-      outputs: ["Current Performance Stability", "Current Safety Risk State", "Performance Diagnostic Engine", "Learner Performance Profile", "Adaptive Learning Engine", "Adaptive Station Scheduling Engine"],
-      guardrails: ["Judge priority against the live station state, not a generic checklist."],
-    }),
+    quickViewContent: [
+      callout("Decision fork / priority contrast", "This interprets whether the learner’s action sequence matched the patient’s current risk, urgency, and station demand."),
+      twoColumn("Decision fork", "Routine framing", ["broad history", "delayed safety action"], "Emergency framing", ["safety check", "monitoring/escalation", "focused information"]),
+      text("Internal-process meaning", "Poor prioritisation may reveal that the learner framed the case as routine, lacked an emergency schema, used a memorised order, froze under pressure, or applied an incorrect learned rule about what “OSCE structure” requires."),
+      warning("Guardrail", "This is not the same as Action Sequence Capture. Action Sequence records order. Clinical Prioritisation judges whether that order made sense in context."),
+    ],
+    blueprintContent: [
+      callout("Clinical Prioritisation Under Pressure — blueprint details", "Interprets the learner’s sequence against clinical urgency and station demand."),
+      list("Inputs", ["Action Sequence Capture", "Safety & Stabilisation Behaviour", "Cue Recognition & Response", "patient state", "time pressure", "station blueprint", "consequence data"]),
+      list("Captures", ["emergency vs routine framing", "stabilisation before detailed history", "safety before diagnosis", "urgent treatment before extended explanation", "escalation threshold", "focused vs excessive history", "over-investigation before stabilisation", "premature closure", "task-balance control"]),
+      text("Internal-process interpretation", "Prioritisation reveals the learner’s live decision hierarchy. It helps infer whether the learner is organising the case around risk, diagnosis, communication performance, memorised sequence, uncertainty avoidance, or perceived examiner expectations."),
+      list("Must not", ["judge actions without patient-state context", "treat generic checklist order as universal priority", "duplicate Action Sequence Capture", "ignore timing and consequence"]),
+      list("Outputs", ["Current Performance Stability", "Current Safety Risk State", "Performance Diagnostic Engine", "Adaptive Learning Engine", "Adaptive Station Scheduling Engine", "Learner Profile as weighted prioritisation-pattern evidence"]),
+      miniFlow("Connector logic", flow("Action Sequence Capture", "Clinical Prioritisation Under Pressure", "Current Performance Stability", "Performance Diagnostic Engine")),
+    ],
   }),
 
   "step2-retrieval-to-action": card({
     id: "step2-retrieval-to-action",
     categoryLabel: "LIVE PERFORMANCE ANALYTIC",
     title: "Retrieval-to-Action Conversion",
-    subtitle: "Whether known information becomes clinical action.",
-    accent: "blue",
-    status: "ACTIVE",
     quickTitle: "Did what they knew become what they did?",
-    quickViewLayoutType: "Step 1 to Step 2 comparison",
-    quickViewContent: quick("Did what they knew become what they did?", "Retrieval-to-Action Conversion", "This is one of the key Step 2 analytics. It compares accessible knowledge with actual behaviour.", [
-      { type: "plainGrid", title: "Comparison examples", items: [["Mentioned in Step 1, not acted in Step 2", "", "They mentioned ABCDE but did not assess ABCDE."], ["Not mentioned in Step 1, acted in Step 2", "", "They did not mention escalation but escalated correctly after deterioration."], ["Said but did not perform", "", "They named the right action but did not execute it."]] },
-      { type: "warning", title: "Guardrail", text: "Failure to act on known information does not automatically mean absent knowledge." },
-    ]),
-    blueprintContent: blueprint({
-      purpose: "Compare accessible knowledge with enacted clinical action.",
-      inputs: ["mentioned-and-acted", "mentioned-not-acted", "not-mentioned-but-acted", "spoken-not-executed", "late conversion", "pressure-blocked conversion", "misframing-blocked conversion", "safety-boundary conversion"],
-      outputs: ["Current Retrieval-to-Action State", "Step 1–Step 2 Alignment Check", "Performance Rationale Hypothesis Queue", "Performance Diagnostic Engine", "Learner Profile", "Learner Performance Profile", "Adaptive Learning Engine", "Adaptive Station Scheduling Engine"],
-      guardrails: ["Failure to act on known information does not automatically mean absent knowledge."],
-    }),
+    subtitle: "Compares accessible knowledge with actual behaviour.",
+    accent: "blue",
+    quickViewContent: [
+      callout("Before-vs-during comparison", "This compares accessible knowledge with actual station behaviour."),
+      grid("Comparison", [["Mentioned before station", "", "not acted during station"], ["Not mentioned before station", "", "acted correctly during station"], ["Said correct action", "", "did not execute it"], ["Knew the risk", "", "acted too late"]]),
+      text("Internal-process meaning", "This identifies whether the learner’s knowledge is operational. A learner may know the right concept but fail to convert it into action under pressure. That is different from not knowing it."),
+      warning("Guardrail", "Do not assume absent knowledge from missed action. Do not assume mastery from one correct action."),
+    ],
+    blueprintContent: [
+      callout("Retrieval-to-Action Conversion — blueprint details", "Detects whether accessible knowledge becomes useful clinical behaviour."),
+      list("Inputs", ["Step 1 baseline", "learner’s spoken station reasoning", "action sequence", "cue response", "patient-state context", "timing", "simulation validity flags"]),
+      list("Patterns", ["mentioned-and-acted", "mentioned-not-acted", "not-mentioned-but-acted", "spoken-not-executed", "late conversion", "pressure-blocked conversion", "cue-triggered conversion", "safety-boundary conversion", "interface-blocked conversion"]),
+      text("Internal-process interpretation", "This analytic helps distinguish knowledge gap, retrieval gap, operationalisation gap, pressure-linked execution failure, task misframing, and weak schema. It is central to identifying whether learning support should teach content, build action schemas, train prioritisation, or test transfer."),
+      list("Must not", ["treat missed action as absent knowledge", "treat spoken knowledge as executable skill", "treat correct action as stable mastery", "ignore Step 1 evidence", "ignore Step 3 clarification"]),
+      list("Outputs", ["Current Retrieval-to-Action State", "Step 1–Step 2 Alignment Check", "Performance Diagnostic Engine", "Post-Station Rationale & Inquiry Register", "Adaptive Learning Engine", "Adaptive Station Scheduling Engine"]),
+      miniFlow("Connector logic", flow("Retrieval-to-Action Conversion", "Current Retrieval-to-Action State", "Step 1–Step 2 Alignment Check", "Post-Station Rationale & Inquiry Register")),
+    ],
   }),
 
   "step2-communication-context": card({
     id: "step2-communication-context",
     categoryLabel: "LIVE PERFORMANCE ANALYTIC",
     title: "Communication-in-Context",
-    subtitle: "Whether communication fits urgency, emotion, and risk.",
-    accent: "blue",
-    status: "ACTIVE",
     quickTitle: "Did the communication fit the clinical moment?",
-    quickViewLayoutType: "communication contrast",
-    quickViewContent: quick("Did the communication fit the clinical moment?", "Communication-in-Context", "Good communication is not always long communication. In an emergency, communication must be clear, respectful, and appropriate to urgency.", [
-      { type: "chips", title: "Examples", items: ["calm reassurance while acting", "concise explanation before urgent treatment", "avoids false reassurance", "responds to distress without delaying safety action"] },
-      { type: "warning", title: "Guardrail", text: "Polished communication cannot compensate for unsafe clinical delay." },
-    ]),
-    blueprintContent: blueprint({
-      purpose: "Interpret communication against the clinical moment.",
-      inputs: ["opening communication", "empathy", "reassurance quality", "false reassurance", "explanation clarity", "consent", "urgency-appropriate brevity", "communication while multitasking", "response to distress/confusion/anger/fear", "team communication"],
-      outputs: ["Current Communication Fit", "Current Performance Stability", "Learner Performance Profile", "Performance Diagnostic Engine", "Adaptive Learning Engine"],
-      guardrails: ["Polished communication cannot compensate for unsafe clinical delay."],
-    }),
+    subtitle: "Checks communication against clinical moment, emotion, urgency, and safety.",
+    accent: "blue",
+    quickViewContent: [
+      callout("Context-fit contrast panel", "This does not reward communication for being long or polished. It checks whether the learner’s communication fitted the clinical moment, patient emotion, urgency, and safety needs."),
+      twoColumn("Contrast", "Rehearsed communication", ["Long, generic, polite, but poorly timed."], "Context-fitted communication", ["Brief when urgent, clear when needed, respectful while acting, honest without false reassurance."]),
+      text("Internal-process meaning", "Communication can reveal whether the learner is genuinely reading the patient context or simply delivering a memorised OSCE communication script."),
+      warning("Guardrail", "Good bedside wording cannot compensate for unsafe clinical delay."),
+    ],
+    blueprintContent: [
+      callout("Communication-in-Context — blueprint details", "Evaluates whether communication fits the clinical and emotional context."),
+      list("Captures", ["opening communication", "empathy", "urgency-appropriate brevity", "explanation clarity", "consent/respect behaviour", "false reassurance risk", "patient distress response", "confusion/anger/fear response", "team communication", "communication while multitasking", "speech/action alignment"]),
+      list("Communication patterns", ["rehearsed empathy without situational fit", "over-explanation during instability", "false reassurance despite risk", "abrupt action without minimum explanation", "clear concise communication while managing safety", "team escalation communicated clearly"]),
+      text("Internal-process interpretation", "Communication patterns may reveal script-following, anxiety, poor risk framing, genuine patient-centred awareness, pressure to say something, or weak integration between communication and clinical action."),
+      list("Must not", ["equate length with quality", "reward polish over context fit", "penalise short communication when urgency demands it", "ignore safety timing"]),
+      list("Outputs", ["Performance Diagnostic Engine", "Learner Profile", "Adaptive Learning Engine", "Learning Momentum Engine only if communication breakdown affects later burden/confidence"]),
+      miniFlow("Connector logic", flow("Communication-in-Context", "Performance Diagnostic Engine", "Learner Profile")),
+    ],
   }),
+};
 
+Object.assign(stepTwoExplanationCards, {
   "step2-cognitive-load-performance": card({
     id: "step2-cognitive-load-performance",
     categoryLabel: "LIVE PERFORMANCE ANALYTIC",
     title: "Cognitive Load Under Performance",
-    subtitle: "Whether pressure destabilises organisation and action.",
-    accent: "blue",
-    status: "ACTIVE",
     quickTitle: "Did pressure break their organisation?",
-    quickViewLayoutType: "breakdown markers",
-    quickViewContent: quick("Did pressure break their organisation?", "Cognitive Load Under Performance", "This captures whether station pressure destabilises the learner’s ability to organise, prioritise, recall, communicate, and act.", [
-      { type: "chips", title: "Breakdown markers", items: ["freezing", "looping", "scattered switching", "narrowing too early", "losing earlier priorities", "fragmented communication", "inability to recover after interruption"] },
-    ]),
-    blueprintContent: blueprint({
-      purpose: "Capture pressure-linked cognitive destabilisation.",
-      inputs: ["performance fragmentation", "working-memory loss", "looping", "freezing", "overload narrowing", "recovery capacity", "switching cost", "pressure-linked delay"],
-      outputs: ["Current Cognitive Load Under Performance", "Current Performance Stability", "Current Retrieval-to-Action State", "Learning Momentum Engine", "Performance Diagnostic Engine", "Learner Performance Profile", "Adaptive Learning Engine", "Adaptive Station Scheduling Engine"],
-      guardrails: ["Cognitive load is not intelligence or permanent ability."],
-    }),
+    subtitle: "Looks for signs pressure is consuming usable mental room.",
+    accent: "blue",
+    quickViewContent: [
+      callout("Breakdown markers", "This looks for signs that live station pressure is consuming the learner’s usable mental room."),
+      chips("Markers", ["Freezing", "Looping", "Narrowing too early", "Scattered switching", "Losing earlier priorities", "Fragmented communication", "Slow recovery"]),
+      text("Internal-process meaning", "These behaviours may show overload, threat response, working-memory strain, poor organising schema, or uncertainty avoidance. They do not prove poor intelligence or permanent inability."),
+      warning("Guardrail", "Cognitive load can explain a performance pattern, but it does not erase safety risk or turn one event into a stable trait."),
+    ],
+    blueprintContent: [
+      callout("Cognitive Load Under Performance — blueprint details", "Detects whether pressure destabilises organisation, recall, prioritisation, communication, or action."),
+      list("Inputs", ["action sequence", "timing", "repeated actions", "cue response", "communication pattern", "patient deterioration points", "Step 1 cognitive capacity estimate", "simulation validity context"]),
+      list("Observable signals", ["freezing", "looping", "scattered switching", "working-memory loss", "overload narrowing", "pressure-linked delay", "fragmented explanation", "inability to resume after interruption", "late recovery"]),
+      text("Internal-process interpretation", "Cognitive-load evidence helps infer whether the learner’s apparent gap came from content absence, retrieval failure, schema weakness, pressure response, or overload. It is especially important when the learner showed pre-station knowledge but failed to act."),
+      list("Must not", ["be treated as intelligence", "be inferred from one pause alone", "excuse unsafe action", "update stable profile without repeated evidence", "ignore station difficulty"]),
+      list("Outputs", ["Current Cognitive Load Under Performance", "Current Performance Stability", "Learning Momentum Engine", "Performance Diagnostic Engine", "Adaptive Learning Engine", "Adaptive Station Scheduling Engine"]),
+      miniFlow("Connector logic", flow("Cognitive Load Under Performance", "Current Cognitive Load Under Performance", "Learning Momentum Engine", "Performance Diagnostic Engine")),
+    ],
   }),
 
   "step2-adaptability-recovery": card({
     id: "step2-adaptability-recovery",
     categoryLabel: "LIVE PERFORMANCE ANALYTIC",
     title: "Adaptability & Recovery",
-    subtitle: "Whether the learner changes course when the station changes.",
-    accent: "blue",
-    status: "ACTIVE",
     quickTitle: "Can they change course when the station changes?",
-    quickViewLayoutType: "branch change",
-    quickViewContent: quick("Can they change course when the station changes?", "Adaptability & Recovery", "This captures whether the learner adapts after new cues, abnormal results, deterioration, error, or contradiction.", [
-      { type: "twoColumn", title: "Branch example", leftTitle: "Adaptive branch", leftItems: ["patient deteriorates", "learner re-prioritises", "learner escalates"], rightTitle: "Rigid branch", rightItems: ["patient deteriorates", "learner continues the same script", "risk increases"] },
-    ]),
-    blueprintContent: blueprint({
-      purpose: "Capture plan flexibility and recovery after station change.",
-      inputs: ["change detection", "re-prioritisation", "error recovery", "plan flexibility", "escalation after change", "transfer within station"],
-      outputs: ["Current Adaptability / Recovery State", "Current Performance Stability", "Current Safety Risk State", "Performance Diagnostic Engine", "Learner Response to Station Profile", "Adaptive Station Scheduling Engine"],
-      guardrails: ["Poor initial action with strong recovery is different from poor initial action with unsafe persistence."],
-    }),
+    subtitle: "Checks whether the learner updates their approach.",
+    accent: "blue",
+    quickViewContent: [
+      callout("Branch response", "This checks whether the learner updates their approach when the patient changes, new information appears, an action fails, or an error becomes visible."),
+      twoColumn("Branch", "Patient deteriorates", ["learner re-prioritises and escalates"], "Patient deteriorates", ["learner continues the same script"]),
+      text("Internal-process meaning", "Adaptability reveals whether the learner is dynamically processing the station or staying inside a fixed plan. A weak start with strong recovery is very different from weak start with unsafe persistence."),
+      warning("Guardrail", "Do not erase recovery. Recovery is a meaningful positive signal."),
+    ],
+    blueprintContent: [
+      callout("Adaptability & Recovery — blueprint details", "Captures whether the learner adjusts after change, deterioration, contradiction, uncertainty, or error."),
+      list("Captures", ["change detection", "re-prioritisation", "response to abnormal results", "response to failed intervention", "correction after mistake", "escalation after change", "plan flexibility", "script abandonment", "recovery speed", "recovery quality"]),
+      text("Internal-process interpretation", "Adaptability helps distinguish rigid memorised performance from flexible clinical reasoning. It also shows whether the learner can rebuild structure after overload or error."),
+      list("Must not", ["treat initial error and persistent unsafe error as the same", "ignore late recovery", "treat one adaptation as stable transfer readiness", "ignore cue availability"]),
+      list("Outputs", ["Current Performance Stability", "Learner Response to Station Profile", "Adaptive Station Scheduling Engine", "Performance Diagnostic Engine", "Learning Momentum Engine when recovery affects confidence/momentum"]),
+      miniFlow("Connector logic", flow("Adaptability & Recovery", "Current Performance Stability", "Learner Response to Station Profile", "Adaptive Station Scheduling Engine", "Performance Diagnostic Engine")),
+    ],
   }),
 
   "step2-interface-friction": card({
     id: "step2-interface-friction",
     categoryLabel: "LIVE PERFORMANCE ANALYTIC",
     title: "Interface / Simulation Friction Capture",
-    subtitle: "Fairness guardrail for simulator or interface contamination.",
-    accent: "cyan",
-    status: "ACTIVE",
     quickTitle: "Was it the learner, or was it the simulator?",
-    quickViewLayoutType: "fairness quarantine",
-    quickViewContent: quick("Was it the learner, or was it the simulator?", "Interface / Simulation Friction Capture", "This protects fairness. If the interface, speech recognition, missing action button, lag, or scenario bug caused the problem, the system must not call it a learner weakness.", [
-      { type: "plainGrid", title: "Examples", items: [["Speech recognition miss", "", "Learner says “request observations” but the system misses it."], ["Unavailable option", "", "ECG option is unavailable when it should be available."], ["Display failure", "", "Vitals fail to display after monitoring is requested."]] },
-    ]),
-    blueprintContent: blueprint({
-      purpose: "Capture simulation and interface validity threats.",
-      inputs: ["input recognition validity", "action availability validity", "UI clarity validity", "response timing validity", "scenario logic validity", "evidence contamination level"],
-      outputs: ["Current Simulation Validity State", "Live Evidence Ledger", "Performance Diagnostic Engine", "Safety-Critical Event Gate as contamination check", "platform/station QA pathway"],
-      guardrails: ["Simulation friction evidence must be quarantined from clinical competence."],
-    }),
+    subtitle: "Protects fairness through evidence quarantine.",
+    accent: "cyan",
+    quickViewContent: [
+      callout("Validity quarantine flow", "This protects fairness. If the interface, speech recognition, action availability, timing, or scenario logic affected the learner’s performance, that evidence must be downgraded, quarantined, or excluded."),
+      miniFlow("Flow", flow("Simulator/input issue", "validity check", "evidence downgraded or excluded", "station QA if repeated")),
+      text("Internal-process meaning", "Not every apparent learner weakness is a learner weakness. Some signals may come from the simulation itself."),
+      warning("Guardrail", "Simulation friction must never become clinical competence evidence."),
+    ],
+    blueprintContent: [
+      callout("Interface / Simulation Friction Capture — blueprint details", "Detects platform or simulation problems that may contaminate Step 2 evidence."),
+      list("Captures", ["speech recognition failure", "unclear action menu/input path", "unavailable expected action", "accidental click", "delayed system response", "missing vitals after valid request", "broken investigation path", "inconsistent patient response", "branch logic error", "mismatch between learner intent and simulator interpretation"]),
+      list("Validity decisions", ["clean evidence: safe to interpret", "partially contaminated: interpret cautiously", "contaminated: exclude from competence interpretation", "unclear: hold as unresolved validity issue"]),
+      text("Internal-process interpretation", "This analytic prevents false diagnosis. It tells the system when not to infer internal learner weakness from a flawed event."),
+      list("Must not", ["update clinical competence", "be ignored when learner reports friction", "automatically accept all learner friction claims", "automatically reject all learner friction claims"]),
+      list("Outputs", ["Current Simulation Validity State", "Performance Diagnostic Engine", "Safety-Critical Event Gate contamination check", "station QA pathway", "evidence quarantine rules"]),
+      miniFlow("Connector logic", flow("Interface / Simulation Friction Capture", "Current Simulation Validity State", "Performance Diagnostic Engine", "evidence quarantine rules")),
+    ],
   }),
-};
-
-const dynamicSpecs = [
-  ["step2-current-performance-stability", "Current Performance Stability", "Organisation versus breakdown during the station.", "Shows whether the learner is staying organised or becoming unstable during the station.", "action order, delays, looping, recovery, missed or repeated actions", "Performance Diagnostic Engine and Learner Performance Profile", "overall ability"],
-  ["step2-current-safety-risk", "Current Safety Risk State", "Whether behaviour is protecting or endangering the patient.", "Shows whether learner behaviour is keeping the patient safe or increasing danger.", "unsafe actions, omissions, critical delays, escalation failures, recovery successes", "Safety-Critical Event Gate and Performance Diagnostic Engine", "checklist completion"],
-  ["step2-current-cue-responsiveness", "Current Cue Responsiveness", "Whether learner behaviour responds to station evidence.", "Shows whether the learner is responding to the station rather than only following a script.", "noticing, interpreting, acting on cues, cue neglect or latency", "Cue → Action Latency Check and Performance Diagnostic Engine", "general attentiveness"],
-  ["step2-current-retrieval-to-action", "Current Retrieval-to-Action State", "Whether accessible knowledge becomes action.", "Shows whether what the learner knows becomes what the learner does.", "Step 1 knowledge, spoken actions, executed actions, pressure-blocked conversion", "Step 1–Step 2 Alignment Check and Performance Diagnostic Engine", "absent knowledge"],
-  ["step2-current-cognitive-load", "Current Cognitive Load Under Performance", "How much pressure is consuming usable mental room.", "Shows whether station pressure is consuming the learner’s usable mental room.", "freezing, narrowing, fragmented switching, looping, recovery capacity", "Learning Momentum Engine and Performance Diagnostic Engine", "intelligence or permanent ability"],
-  ["step2-current-communication-fit", "Current Communication Fit", "Whether communication fits the moment and risk.", "Shows whether the learner’s communication is useful for this moment, this patient, and this level of urgency.", "empathy, brevity, clarity, false reassurance, team communication", "Performance Diagnostic Engine and Learner Performance Profile", "how much they talked"],
-  ["step2-current-adaptability-recovery", "Current Adaptability / Recovery State", "Whether they recover or stay rigid after change.", "Shows whether the learner can change course when the station demands it.", "deterioration response, error recovery, re-prioritisation, plan flexibility", "Learner Response to Station Profile and Adaptive Station Scheduling Engine", "initial correctness alone"],
-  ["step2-current-simulation-validity", "Current Simulation Validity State", "Whether evidence is clean enough to interpret.", "Shows whether the station evidence is clean enough to interpret as learner performance.", "interface errors, missing actions, lag, recognition failures, scenario logic validity", "Performance Diagnostic Engine and station QA pathway", "clinical competence"],
-];
-
-dynamicSpecs.forEach(([id, title, subtitle, meaning, raises, feeds, guardrail]) => {
-  stepTwoExplanationCards[id] = card({
-    id,
-    categoryLabel: "LEARNER DYNAMIC PERFORMANCE VARIABLE",
-    title,
-    subtitle,
-    accent: id.includes("validity") ? "cyan" : "purple",
-    status: "ACTIVE",
-    quickTitle: meaning,
-    quickViewLayoutType: "live-state gauge",
-    quickViewContent: quick(meaning, title, meaning, [
-      { type: "plainGrid", title: "Live state reading", items: [["What changes it?", "", raises], ["What it feeds", "", feeds], ["Must not be confused with", "", guardrail]] },
-    ]),
-    blueprintContent: blueprint({
-      purpose: meaning,
-      inputs: [raises],
-      outputs: [feeds],
-      guardrails: [`Do not confuse this live state with ${guardrail}.`],
-    }),
-  });
 });
 
-const nodeSpecs = [
-  ["step2-safety-critical-gate", "Safety-Critical Event Gate", "Did patient safety change because of what happened?", "Flags unsafe actions, unsafe omissions, critical delays, escalation failures, and recovery successes. It also checks simulation validity before interpretation.", ["unsafe action", "unsafe omission", "critical delay", "recovery success", "simulation-validity check"]],
-  ["step2-alignment-check", "Step 1–Step 2 Alignment Check", "Did their plan match their performance?", "Compares what the learner expected, recalled, and felt before the station with what they actually did.", ["good plan, poor execution", "weak recall, strong action", "low uncertainty, unsafe performance", "high uncertainty, safe performance"]],
-  ["step2-cue-action-latency", "Cue → Action Latency Check", "How long did it take to act after a cue?", "Measures time between meaningful cue availability and appropriate learner response.", ["cue available", "cue clinically relevant", "cue time-sensitive", "learner response timing"]],
-  ["step2-rationale-hypothesis-queue", "Performance Rationale Hypothesis Queue", "What might explain that behaviour?", "Stores possible reasons for important observed behaviours without pretending the system already knows the answer.", ["did not recognise instability", "recognised but froze", "followed history script", "attempted action but interface missed it"]],
-  ["step2-inquiry-prioritizer", "Post-Station Inquiry Prioritizer", "Which questions are worth asking later?", "Selects the top 3–6 high-yield clarification questions after the learner gives their own self-evaluation.", ["safety", "diagnostic uncertainty", "Step 1 mismatch", "adaptive-learning impact", "scheduling impact", "learner readiness", "simulation validity"]],
-  ["step2-deferred-inquiry-register", "Deferred Inquiry Register", "What should be tested later instead of asked now?", "Stores unresolved but important rationale questions for future testing or scheduling so the learner is not overloaded immediately.", ["unresolved hypotheses", "future retesting targets", "near-transfer station questions"]],
-];
-
-nodeSpecs.forEach(([id, title, quickTitle, text, items]) => {
-  stepTwoExplanationCards[id] = card({
-    id,
-    categoryLabel: "INTERACTION / INTERPRETATION NODE",
-    title,
-    subtitle: text,
-    accent: id.includes("safety") ? "green" : "cyan",
-    quickTitle,
-    quickViewLayoutType: "input processing output",
-    quickViewContent: quick(quickTitle, title, text, [
-      { type: "chips", title: "Key signals", items },
-      { type: "warning", title: "Guardrail", text: id.includes("hypothesis") || id.includes("deferred") ? "These are not confirmed learner weaknesses." : "Interpret only from available, valid station evidence." },
-    ]),
-    blueprintContent: blueprint({
-      purpose: text,
-      inputs: items,
-      outputs: ["Performance Diagnostic Engine", "Post-station inquiry flow", "Adaptive Learning Engine", "Adaptive Station Scheduling Engine"],
-      guardrails: ["Do not treat provisional interpretation as confirmed motive or competence judgement."],
-    }),
-  });
-});
-
-const profileSpecs = [
-  ["step2-learner-profile", "Learner Profile", "How does this update the learner’s broader model?", "Interpreted Step 2 evidence may update broader learner patterns, but raw event dumps must not be stored as profile truth."],
-  ["step2-learner-performance-profile", "Learner Performance Profile", "How does this learner actually perform across stations?", "Stores performance strengths, weaknesses, fragilities, safety patterns, sequencing patterns, pressure response, recovery, and transfer."],
-  ["step2-learner-response-station-profile", "Learner Response to Station Profile", "How does this learner respond to this kind of station?", "Captures learner-relative response by station type, difficulty, time pressure, emergency load, communication load, novelty, and transfer distance."],
-  ["step2-learner-engagement-profile", "Learner Engagement Profile", "Did the station affect their ability to keep moving?", "Engagement is monitored only when relevant: frustration, avoidance, overload, refusal, or readiness for reflection."],
-];
-
-profileSpecs.forEach(([id, title, quickTitle, text]) => {
-  stepTwoExplanationCards[id] = card({
-    id,
+Object.assign(stepTwoExplanationCards, {
+  "step2-learner-profile": card({
+    id: "step2-learner-profile",
     categoryLabel: "PROFILE CONTEXT",
-    title,
-    subtitle: text,
+    title: "Learner Profile",
+    quickTitle: "How does this update the broader learner model?",
+    subtitle: "Stores interpreted, weighted learner patterns.",
     accent: "teal",
-    quickTitle,
-    quickViewLayoutType: "raw evidence vs interpreted profile",
-    quickViewContent: quick(quickTitle, title, text, [
-      { type: "twoColumn", title: "Raw evidence vs profile meaning", leftTitle: "Raw station evidence", leftItems: ["actions", "timing", "cues", "communication", "validity flags"], rightTitle: "Profile update", rightItems: ["weighted pattern", "repeated evidence", "interpreted after checks"] },
-      { type: "warning", title: "Guardrail", text: id.includes("engagement") ? "Engagement is not clinical competence." : "Raw event dumps must not become profile truth." },
-    ]),
-    blueprintContent: blueprint({
-      purpose: text,
-      inputs: ["Performance Diagnostic Engine", "valid Step 2 interpreted evidence", "repeated pattern evidence"],
-      outputs: ["Adaptive Learning Engine", "Adaptive Station Scheduling Engine", "Learning Momentum Engine", "Learner-Centered Communication Layer"],
-      guardrails: ["Do not store one raw event as a stable trait.", "Do not merge distinct gap types into one vague weakness."],
-    }),
-  });
+    quickViewContent: [
+      callout("Layered learner model", "This profile stores interpreted, weighted learner patterns across the adaptive cycle. It does not store raw station events as permanent truth."),
+      miniFlow("Layered model", flow("raw event", "interpreted signal", "evidence strength", "repeated pattern", "profile pathway")),
+      text("Internal-process meaning", "The Learner Profile stores how the learner tends to frame, retrieve, act, adapt, communicate, and self-monitor over time."),
+      warning("Guardrail", "A single cold-station event can suggest a pattern, but cannot establish a stable trait."),
+    ],
+    blueprintContent: [
+      callout("Learner Profile — blueprint details", "Stores the learner’s broader adaptive model."),
+      list("Step 2 internal pathways", ["OSCE station performance pattern", "safety-risk pattern", "retrieval-to-action pattern", "cue-response pattern", "communication-context pattern", "cognitive-load-under-performance pattern", "adaptability/recovery pattern", "metacognitive comparison pathway", "simulation-validity caution history where relevant"]),
+      list("Inputs", ["Performance Diagnostic Engine output", "Step 1–Step 2 Alignment Check", "Safety-Critical Event Gate", "Retrieval-to-Action Conversion", "Current Performance Stability", "Current Simulation Validity State", "later Step 3/4 evidence"]),
+      list("Update rules", ["store weighted interpreted evidence", "preserve context", "preserve evidence strength", "preserve validity flags", "avoid stable claims from one station", "keep raw ledger separate"]),
+      list("Must not", ["store raw event dumps", "confuse engagement with competence", "accept contaminated evidence as learner weakness", "merge distinct pathways into one vague weakness"]),
+    ],
+  }),
+
+  "step2-learner-response-station-profile": card({
+    id: "step2-learner-response-station-profile",
+    categoryLabel: "PROFILE CONTEXT",
+    title: "Learner Response to Station Profile",
+    quickTitle: "How does this learner respond to this kind of station?",
+    subtitle: "Tracks response to station type and challenge structure.",
+    accent: "teal",
+    quickViewContent: [
+      callout("Station-response matrix", "This profile tracks how the learner responds to different station types and challenge structures."),
+      chips("Matrix dimensions", ["station type", "difficulty", "time pressure", "emergency load", "communication load", "novelty", "transfer distance"]),
+      text("Internal-process meaning", "A learner may perform well in familiar low-pressure stations but fragment under novelty, urgency, or communication-heavy pressure. This profile helps detect those learner-specific conditions."),
+      warning("Guardrail", "Generic station difficulty is not learner-specific truth."),
+    ],
+    blueprintContent: [
+      callout("Learner Response to Station Profile — blueprint details", "Stores how this learner responds to particular station conditions."),
+      list("Tracks", ["station type", "skill domains", "difficulty", "time pressure", "cognitive load", "emergency load", "communication load", "novelty", "transfer distance", "deterioration dynamics", "prior station similarity"]),
+      list("Inputs", ["Adaptability & Recovery", "Cue Recognition & Response", "Clinical Prioritisation Under Pressure", "Current Performance Stability", "Learner Engagement Profile where challenge-fit is affected", "Adaptive Station Scheduling Engine feedback"]),
+      list("Outputs", ["Adaptive Station Scheduling Engine", "Learning Momentum Engine when challenge-fit or re-entry willingness is affected", "Adaptive Learning Engine when support must match station-response pattern"]),
+      list("Must not", ["overfit one station", "treat station metadata as learner-specific evidence", "ignore transfer distance", "ignore simulation validity"]),
+    ],
+  }),
+
+  "step2-learner-engagement-profile": card({
+    id: "step2-learner-engagement-profile",
+    categoryLabel: "PROFILE CONTEXT",
+    title: "Learner Engagement Profile",
+    quickTitle: "Did the station affect their ability to keep moving?",
+    subtitle: "Tracks burden, confidence shifts, fatigue, avoidance, and readiness.",
+    accent: "teal",
+    quickViewContent: [
+      callout("Readiness / burden direction panel", "This profile tracks how the learner handles difficulty, frustration, confidence shifts, fatigue, avoidance, and readiness for reflection."),
+      chips("Direction panel", ["burden ↑", "confidence ↓", "motivation ↑", "avoidance ↑", "reflection readiness ↓/↑"]),
+      text("Internal-process meaning", "A hard station may motivate one learner and shut down another. This profile helps regulate pacing without confusing emotional response with clinical competence."),
+      warning("Guardrail", "Engagement is not ability."),
+    ],
+    blueprintContent: [
+      callout("Learner Engagement Profile — blueprint details", "Stores engagement architecture across the learning journey."),
+      list("Step 2 inputs when relevant", ["visible frustration", "disengagement after difficulty", "avoidance behaviour", "refusal to continue", "excessive burden", "reaction to simulation difficulty", "readiness for post-station reflection", "recovery after difficult station", "confidence drop", "motivation increase after self-recognised gap"]),
+      list("Used by", ["Learning Momentum Engine", "Post-Station Rationale & Inquiry Register", "Learner-Centered Communication Layer", "Adaptive Learning Engine when format burden matters", "Adaptive Station Scheduling Engine when challenge-fit matters"]),
+      list("Must not", ["become clinical competence evidence", "treat emotion as weakness", "soften truth", "fake motivation", "override safety evidence"]),
+    ],
+  }),
+
+  "step2-performance-diagnostic-engine": card({
+    id: "step2-performance-diagnostic-engine",
+    categoryLabel: "CORE ENGINE",
+    title: "Performance Diagnostic Engine",
+    quickTitle: "What does the performance evidence suggest?",
+    subtitle: "Interprets the station trace into strengths, gaps, uncertainty, and provisional hypotheses.",
+    accent: "green",
+    status: "INTERPRETING",
+    quickViewContent: [
+      callout("Evidence-to-interpretation pipeline", "This engine interprets the station trace into strengths, gaps, uncertainty, and provisional hypotheses."),
+      miniFlow("Pipeline", flow("evidence ledger", "analytic signals", "dynamic states", "diagnostic interpretation", "unresolved questions", "later feedback/support context")),
+      text("Internal-process meaning", "Its job is to infer what may be happening underneath the visible performance, while preserving uncertainty until Step 3 and later evidence clarify the learner’s rationale."),
+      warning("Guardrail", "It does not teach during Step 2 and does not turn one signal into profile truth."),
+    ],
+    blueprintContent: [
+      callout("Performance Diagnostic Engine — blueprint details", "Interprets Step 2 evidence into performance signals, strengths, gap hypotheses, and unresolved rationale questions."),
+      list("Inputs", ["Live Evidence Ledger", "Action Sequence Capture", "Safety & Stabilisation Behaviour", "Cue Recognition & Response", "Clinical Prioritisation Under Pressure", "Retrieval-to-Action Conversion", "Communication-in-Context", "Cognitive Load Under Performance", "Adaptability & Recovery", "Interface / Simulation Friction Capture", "Current dynamic states", "Safety-Critical Event Gate", "Step 1–Step 2 Alignment Check"]),
+      text("Shared Diagnostic Hypothesis Framework", "Observed behaviour does not equal confirmed cause. The engine may generate internal-process hypotheses, but those hypotheses must be weighed against station evidence, Step 1 baseline, learner profile context, simulation-validity checks, and later Step 3 self-evaluation."),
+      list("Possible hypothesis categories", ["knowledge gap", "retrieval gap", "retrieval-to-action gap", "task-framing error", "clinical schema problem", "misconception / incorrect learned rule", "cognitive load / working-memory overload", "affective pressure state", "habitual script-following", "cue-processing failure", "communication-pattern issue", "behavioural avoidance / uncertainty avoidance", "simulation / interface friction"]),
+      list("Outputs", ["Learner Profile updates as weighted evidence", "Learner Response to Station Profile", "Adaptive Learning Engine context", "Adaptive Station Scheduling Engine context", "Post-Station Rationale & Inquiry Register", "Step 5 feedback preparation"]),
+      list("Must not", ["teach during Step 2", "treat hypotheses as confirmed motives", "update profiles from contaminated evidence", "make final learning-format decisions", "make final station-scheduling decisions", "ignore recovery or contradictory evidence"]),
+    ],
+  }),
+
+  "step2-adaptive-learning-engine": card({
+    id: "step2-adaptive-learning-engine",
+    categoryLabel: "CORE ENGINE",
+    title: "Adaptive Learning Engine",
+    quickTitle: "What support might they need later?",
+    subtitle: "Absorbs Step 2 context for later support selection.",
+    accent: "green",
+    status: "CONTEXT ABSORBING",
+    quickViewContent: [
+      callout("Support-routing contract", "This engine absorbs Step 2 diagnostic context so later support can target the real breakdown, not just the topic."),
+      miniFlow("Contract", flow("absorbs now", "waits for Step 3/4 evidence", "later selects support")),
+      text("Internal-process meaning", "If the issue is retrieval-to-action, the learner may need practice converting knowledge into action. If the issue is task framing, they may need schema correction. If the issue is overload, they may need staged support."),
+      warning("Guardrail", "It does not choose the final learning format in Step 2."),
+    ],
+    blueprintContent: [
+      callout("Adaptive Learning Engine — blueprint details", "Prepares later support decisions using Step 2 performance evidence."),
+      list("Inputs", ["Performance Diagnostic Engine", "Retrieval-to-Action Conversion", "Safety-Critical Event Gate", "Cognitive Load Under Performance", "Communication-in-Context", "Clinical Prioritisation Under Pressure", "Step 1–Step 2 Alignment Check", "Learner Profile", "Learner Engagement Profile when burden affects support", "Adaptive Learning-Format Profile as background only"]),
+      list("May do in Step 2", ["form provisional support hypotheses", "distinguish likely content gap vs operationalisation gap", "note safety correction need", "note retrieval-to-action support need", "note schema/prioritisation support need", "note communication-in-context support need", "note cognitive-load support need"]),
+      list("Must not", ["teach during the cold station", "choose final learning format before Step 3/4/5 evidence", "update Adaptive Learning-Format Profile directly", "treat unresolved hypotheses as confirmed learning needs", "overrule simulation-validity cautions"]),
+    ],
+  }),
+
+  "step2-adaptive-station-scheduling-engine": card({
+    id: "step2-adaptive-station-scheduling-engine",
+    categoryLabel: "CORE ENGINE",
+    title: "Adaptive Station Scheduling Engine",
+    quickTitle: "What should be tested again later?",
+    subtitle: "Absorbs Step 2 context for future station planning.",
+    accent: "green",
+    status: "CONTEXT ABSORBING",
+    quickViewContent: [
+      callout("Future station-routing contract", "This engine absorbs Step 2 context for future station planning. It prepares possible reinforcement, near-transfer, far-transfer, spaced revisit, or retesting decisions."),
+      miniFlow("Contract", flow("absorbs evidence now", "waits for later confirmation", "schedules later")),
+      text("Internal-process meaning", "If a gap may be caused by overload, the learner may need a lower-burden retest first. If a cue-response issue appears, the system may later choose a cue-rich near-transfer station."),
+      warning("Guardrail", "Step 2 alone does not choose the next station."),
+    ],
+    blueprintContent: [
+      callout("Adaptive Station Scheduling Engine — blueprint details", "Prepares future station movement decisions using Step 2 evidence."),
+      list("Inputs", ["Current Performance Stability", "Current Safety Risk State", "Current Retrieval-to-Action State", "Current Cognitive Load Under Performance", "Current Simulation Validity State", "Learner Response to Station Profile", "Learner Profile", "Post-Station Rationale & Inquiry Register", "simulation validity caution flags"]),
+      list("May do in Step 2", ["mark possible reinforcement need", "mark possible near-transfer retest", "mark safety-critical retesting need", "mark unresolved hypothesis for future testing", "mark challenge-fit issue", "mark transfer-readiness hypothesis", "mark need to test under different pressure"]),
+      list("Must not", ["decide final next station from Step 2 alone", "ignore Step 3/4/5 evidence", "schedule from contaminated evidence", "treat unresolved hypotheses as confirmed weaknesses", "punish the learner with repeated difficult stations without momentum checks"]),
+    ],
+  }),
+
+  "step2-learning-momentum-engine": card({
+    id: "step2-learning-momentum-engine",
+    categoryLabel: "LEARNER-FACING REGULATION / COMMUNICATION LAYER",
+    title: "Learning Momentum Engine",
+    quickTitle: "How much can the learner handle next?",
+    subtitle: "Monitors post-station burden, confidence shift, motivation, fatigue, and readiness.",
+    accent: "purple",
+    status: "MONITORING",
+    quickViewContent: [
+      callout("Direction-and-intensity map", "This engine monitors the learner’s post-station burden, confidence shift, motivation, fatigue, and readiness for reflection."),
+      chips("Direction map", ["burden ↑", "confidence ↓", "motivation ↑", "fatigue ↑", "reflection readiness ↓/↑", "question load adjusted"]),
+      text("Internal-process meaning", "A cold station can motivate, overwhelm, frustrate, or destabilise a learner. This engine regulates pacing so the system can stay truthful without overloading the learner."),
+      warning("Guardrail", "It does not rescue clinical performance, soften clinical truth, create fake progress, or treat emotional reaction as competence."),
+    ],
+    blueprintContent: [
+      callout("Learning Momentum Engine — blueprint details", "Regulates truthful forward movement after and around Step 2."),
+      list("Inputs", ["Current Cognitive Load Under Performance", "Current Performance Stability", "Learner Engagement Profile", "Safety-Critical Event Gate when safety burden affects reflection readiness", "Current Simulation Validity State when friction affects trust", "station difficulty/context"]),
+      list("Outputs", ["Post-Station Rationale & Inquiry Register question-load regulation", "Learner-Centered Communication Layer pacing", "Step 3 self-evaluation pacing", "later feedback staging", "Adaptive Learning Engine as burden context only", "Adaptive Station Scheduling Engine as challenge-fit context only"]),
+      list("Must not", ["rescue learner during the cold station", "alter clinical truth", "convert emotion into competence scoring", "light up or connect to every engine", "fake motivation or confidence"]),
+      text("Connector rule", "Learning Momentum Engine should have limited pathways only. It should not highlight the entire map."),
+    ],
+  }),
+
+  "step2-learner-centered-communication-layer": card({
+    id: "step2-learner-centered-communication-layer",
+    categoryLabel: "LEARNER-FACING REGULATION / COMMUNICATION LAYER",
+    title: "Learner-Centered Communication Layer",
+    quickTitle: "How should the system speak after the station?",
+    subtitle: "Shapes non-station system communication.",
+    accent: "cyan",
+    status: "NON-STATION OUTPUT",
+    quickViewContent: [
+      callout("Boundary split", "This layer shapes non-station system communication so the learner receives clear, experience-near prompts and feedback."),
+      twoColumn("Boundary split", "In-station patient/nurse/relative speech", ["Station Simulation Engine / authenticity boundary"], "Non-station system messages", ["Learner-Centered Communication Layer"]),
+      text("Internal-process meaning", "The layer helps the system ask the right thing at the right burden level after the performance, without contaminating the station itself."),
+      warning("Guardrail", "It must not rewrite patient speech."),
+    ],
+    blueprintContent: [
+      callout("Learner-Centered Communication Layer — blueprint details", "Filters non-station learner-facing communication."),
+      list("Applies to", ["transition messages", "Step 3 self-evaluation prompts", "clarification questions", "feedback wording", "next-step explanations", "burden-sensitive phrasing"]),
+      list("Does not apply to", ["simulated patient speech", "relative speech", "nurse/confederate speech", "in-character ambiguity", "clinical distress cues", "station realism"]),
+      list("Inputs", ["Learning Momentum Engine", "Learner Engagement Profile", "Current Cognitive Load Under Performance", "Current Simulation Validity State", "Post-Station Rationale & Inquiry Register"]),
+      list("Outputs", ["learner-facing non-station prompts", "Step 3 question phrasing", "feedback phrasing", "staged communication where needed"]),
+      list("Must not", ["soften clinical truth into vague reassurance", "hide safety-critical issues", "rewrite in-station speech", "become generic wording polish only", "bypass learning momentum constraints"]),
+    ],
+  }),
 });
 
-const engineSpecs = [
-  ["step2-performance-diagnostic-engine", "Performance Diagnostic Engine", "What does the performance evidence suggest?", "Interprets the Live Evidence Ledger into gap types, strengths, and hypotheses.", "INTERPRETING", ["knowledge gap", "retrieval gap", "retrieval-to-action gap", "task-framing gap", "sequencing gap", "safety gap", "cue-response gap", "communication-context gap", "cognitive-load breakdown", "adaptability gap", "interface contamination"], "does not teach during Step 2 and does not treat hypotheses as confirmed motives"],
-  ["step2-adaptive-learning-engine", "Adaptive Learning Engine", "What support might they need later?", "Absorbs Step 2 context but does not choose the final learning format yet.", "CONTEXT ABSORBING", ["performance evidence", "Step 1 alignment", "profile context", "rationale hypotheses"], "context-absorbing, not final format-selecting"],
-  ["step2-adaptive-station-scheduling-engine", "Adaptive Station Scheduling Engine", "What should be tested again later?", "Absorbs future station-planning evidence but does not make final scheduling decisions in Step 2.", "CONTEXT ABSORBING", ["performance evidence", "Deferred Inquiry Register", "near-transfer targets", "challenge-fit evidence"], "does not make final next-station decisions in Step 2"],
-  ["step2-learning-momentum-engine", "Learning Momentum Engine", "How much reflection can they handle next?", "Monitors burden, readiness, pacing, and transition into Step 3.", "MONITORING / PACING", ["cognitive load", "frustration", "readiness", "engagement profile"], "must not rescue performance during the cold station"],
-  ["step2-learner-centered-communication-layer", "Learner-Centered Communication Layer", "How should the system speak after the station?", "Filters non-station system output only.", "NON-STATION OUTPUT", ["system prompts", "transitions", "self-evaluation prompts", "feedback wording"], "must not rewrite patient speech"],
-];
+Object.assign(stepTwoExplanationCards, {
+  "step2-current-performance-stability": card({
+    id: "step2-current-performance-stability",
+    categoryLabel: "DYNAMIC VARIABLE",
+    title: "Current Performance Stability",
+    quickTitle: "Is their performance staying organised?",
+    subtitle: "Current live state of organisation during the station.",
+    accent: "purple",
+    quickViewContent: [
+      callout("Balance/status meter", "This is the current live state of the learner’s organisation during the station. It changes as the learner maintains direction, drifts, loops, freezes, recovers, or fragments."),
+      miniFlow("State meter", flow("Stable", "strained", "fragmented", "recovered")),
+      text("Internal-process meaning", "This state helps the system see whether the learner is holding a usable station structure or losing organisation under pressure."),
+      warning("Guardrail", "This is a live state, not a permanent judgement."),
+    ],
+    blueprintContent: [
+      callout("Current Performance Stability — blueprint details", "Represents the learner’s current organisation and stability during Step 2."),
+      list("Inputs", ["Action Sequence Capture", "Clinical Prioritisation Under Pressure", "Cognitive Load Under Performance", "Adaptability & Recovery", "Communication-in-Context", "patient-state changes", "timing"]),
+      list("Sub-states", ["sequence coherence", "priority maintenance", "drift level", "loop frequency", "fragmentation severity", "recovery capacity", "phase-specific stability"]),
+      list("Used by", ["Performance Diagnostic Engine", "Learning Momentum Engine", "Adaptive Learning Engine", "Adaptive Station Scheduling Engine", "Learner Profile"]),
+      list("Must not", ["average away phase-specific collapse/recovery", "become final competence", "ignore station difficulty", "ignore simulation validity"]),
+    ],
+  }),
 
-engineSpecs.forEach(([id, title, quickTitle, text, status, items, guardrail]) => {
-  const isLayer = id.includes("communication") || id.includes("momentum");
-  stepTwoExplanationCards[id] = card({
-    id,
-    categoryLabel: isLayer ? "LEARNER-FACING REGULATION / COMMUNICATION LAYER" : "CORE ENGINE",
-    title,
-    subtitle: text,
-    accent: "green",
-    status,
-    quickTitle,
-    quickViewLayoutType: "what it may do / must not do",
-    quickViewContent: quick(quickTitle, title, text, [
-      ...(id.includes("communication")
-        ? [{ type: "twoColumn", title: "Two speech systems", leftTitle: "In-character station dialogue", leftItems: ["governed by Simulation Authenticity Boundary", "patient/nurse/relative speech stays realistic"], rightTitle: "Non-station system messages", rightItems: ["governed by Learner-Centered Communication Layer", "prompts, transitions, self-evaluation, feedback"] }]
-        : []),
-      { type: "chips", title: "Uses", items },
-      { type: "warning", title: "Guardrail", text: guardrail },
-    ]),
-    blueprintContent: blueprint({
-      purpose: text,
-      inputs: items,
-      outputs: ["later self-evaluation", "metacognitive correction", "feedback preparation", "adaptive support", "future station planning"],
-      guardrails: [guardrail, "Step 2 does not teach, hint, or correct during the cold station."],
-    }),
-  });
+  "step2-current-safety-risk": card({
+    id: "step2-current-safety-risk",
+    categoryLabel: "DYNAMIC VARIABLE",
+    title: "Current Safety Risk State",
+    quickTitle: "Is the patient getting safer or less safe?",
+    subtitle: "Current live safety-risk state.",
+    accent: "cyan",
+    quickViewContent: [
+      callout("Risk ladder", "This is the current live safety-risk state produced by learner behaviour and patient condition."),
+      miniFlow("Risk ladder", flow("Controlled", "unresolved risk", "rising risk", "critical risk", "recovered/contained")),
+      text("Internal-process meaning", "The state helps the system separate low-risk inefficiency from behaviour that changes patient safety."),
+      warning("Guardrail", "Safety risk must be linked to evidence, patient state, and simulation validity."),
+    ],
+    blueprintContent: [
+      callout("Current Safety Risk State — blueprint details", "Represents current patient-safety risk created, reduced, or left unresolved by learner behaviour."),
+      list("Inputs", ["Safety & Stabilisation Behaviour", "Clinical Prioritisation Under Pressure", "Cue Recognition & Response", "Station Simulation Engine consequence logic", "Current Simulation Validity State"]),
+      list("Sub-states", ["active safety risk", "unresolved safety omission", "harmful action risk", "deterioration risk", "contraindication risk", "escalation need", "safety recovery status"]),
+      list("Used by", ["Safety-Critical Event Gate", "Performance Diagnostic Engine", "Adaptive Learning Engine", "Adaptive Station Scheduling Engine"]),
+      list("Must not", ["ignore timing", "ignore patient state", "treat all omissions equally", "update clinical profile if evidence is contaminated"]),
+    ],
+  }),
+
+  "step2-current-retrieval-to-action": card({
+    id: "step2-current-retrieval-to-action",
+    categoryLabel: "DYNAMIC VARIABLE",
+    title: "Current Retrieval-to-Action State",
+    quickTitle: "Is knowledge becoming action right now?",
+    subtitle: "Current live state of knowledge converting into behaviour.",
+    accent: "purple",
+    quickViewContent: [
+      callout("Conversion status", "This is the current live state of whether the learner is converting accessible knowledge into useful station behaviour."),
+      grid("Conversion states", [["Accessible", "spoken", "acted"], ["Accessible", "spoken", "not acted"], ["Not stated", "", "acted after cue"], ["Known risk", "", "acted late"]]),
+      text("Internal-process meaning", "This state tracks whether the learner’s knowledge is operational under pressure."),
+      warning("Guardrail", "It must preserve multiple possible explanations until Step 3/4."),
+    ],
+    blueprintContent: [
+      callout("Current Retrieval-to-Action State — blueprint details", "Represents whether accessible knowledge is currently converting into station action."),
+      list("Inputs", ["Retrieval-to-Action Conversion", "Step 1 baseline", "Action Sequence Capture", "Cue Recognition & Response", "Clinical Reasoning-in-Action where available"]),
+      list("Sub-states", ["mentioned-and-acted", "mentioned-not-acted", "spoken-not-executed", "late conversion", "pressure-blocked conversion", "cue-triggered conversion", "safety-boundary conversion"]),
+      list("Used by", ["Step 1–Step 2 Alignment Check", "Performance Diagnostic Engine", "Post-Station Rationale & Inquiry Register", "Adaptive Learning Engine", "Adaptive Station Scheduling Engine"]),
+      list("Must not", ["decide absent knowledge by itself", "treat correct action as full mastery", "ignore Step 1 baseline", "ignore Step 3 rationale clarification"]),
+    ],
+  }),
+
+  "step2-current-cognitive-load": card({
+    id: "step2-current-cognitive-load",
+    categoryLabel: "DYNAMIC VARIABLE",
+    title: "Current Cognitive Load Under Performance",
+    quickTitle: "How much mental room is the station consuming?",
+    subtitle: "Live estimate of cognitive burden during Step 2.",
+    accent: "purple",
+    quickViewContent: [
+      callout("Load signal band", "This is the current live estimate of how much the station is consuming the learner’s usable cognitive space."),
+      miniFlow("Signal band", flow("manageable", "strained", "overloaded", "fragmented", "recovering")),
+      text("Internal-process meaning", "This helps explain why knowledge, communication, or prioritisation may break down during performance."),
+      warning("Guardrail", "Cognitive load is not intelligence and not final ability."),
+    ],
+    blueprintContent: [
+      callout("Current Cognitive Load Under Performance — blueprint details", "Represents live cognitive burden during Step 2."),
+      list("Inputs", ["Cognitive Load Under Performance", "Action Sequence Capture", "Communication-in-Context", "Cue Recognition & Response", "Current Simulation Validity State", "Step 1 Available Cognitive Capacity"]),
+      list("Sub-states", ["fragmentation level", "working-memory strain", "overload narrowing", "freezing level", "switching cost", "recovery capacity", "pressure-linked delay"]),
+      list("Used by", ["Current Performance Stability", "Learning Momentum Engine", "Performance Diagnostic Engine", "Adaptive Learning Engine", "Adaptive Station Scheduling Engine"]),
+      list("Must not", ["be inferred from one hesitation", "be treated as competence", "be used to soften clinical truth", "ignore station difficulty"]),
+    ],
+  }),
+
+  "step2-current-simulation-validity": card({
+    id: "step2-current-simulation-validity",
+    categoryLabel: "DYNAMIC VARIABLE",
+    title: "Current Simulation Validity State",
+    quickTitle: "Can this evidence be trusted?",
+    subtitle: "Current validity state of simulation evidence.",
+    accent: "cyan",
+    status: "VALIDITY CHECK",
+    quickViewContent: [
+      callout("Validity status", "This is the current validity state of the simulation evidence. It tracks whether the station is clean enough to interpret as learner performance."),
+      miniFlow("Validity status", flow("clean", "caution", "contaminated", "exclude/retest")),
+      text("Internal-process meaning", "This state stops the system from mistaking simulator failure for learner weakness."),
+      warning("Guardrail", "Contaminated evidence must be downgraded or quarantined."),
+    ],
+    blueprintContent: [
+      callout("Current Simulation Validity State — blueprint details", "Represents whether Step 2 evidence is clean enough to interpret."),
+      list("Inputs", ["Interface / Simulation Friction Capture", "Station Simulation Engine self-checks", "learner-reported friction", "evidence inconsistencies", "input recognition validity"]),
+      list("Sub-states", ["input validity", "action availability validity", "UI clarity validity", "response timing validity", "scenario branch validity", "evidence contamination level"]),
+      list("Used by", ["Performance Diagnostic Engine", "Safety-Critical Event Gate", "Learner Profile exclusion rules", "station QA pathway", "Adaptive Learning Engine as cautionary context", "Adaptive Station Scheduling Engine as cautionary context"]),
+      list("Must not", ["be ignored when major friction occurs", "automatically accept all friction claims", "automatically reject all friction claims", "allow contaminated evidence into clinical competence pathways"]),
+    ],
+  }),
+
+  "step2-safety-critical-gate": card({
+    id: "step2-safety-critical-gate",
+    categoryLabel: "INTERACTION / INTERPRETATION NODE",
+    title: "Safety-Critical Event Gate",
+    quickTitle: "Did this event change patient safety?",
+    subtitle: "Detects moments where behaviour changes safety risk.",
+    accent: "cyan",
+    status: "SAFETY GATE",
+    quickViewContent: [
+      callout("Escalation gate", "This gate detects moments where learner action, omission, or delay meaningfully changes safety risk."),
+      grid("Gate outcomes", [["routine evidence", "", "monitor"], ["safety-relevant evidence", "", "prioritise"], ["critical risk", "", "escalate later feedback/support"], ["contaminated event", "", "quarantine first"]]),
+      text("Internal-process meaning", "The gate does not diagnose the learner’s motive. It ensures safety-critical signals are not buried among ordinary station events."),
+      warning("Guardrail", "Safety events must still be checked for simulation validity."),
+    ],
+    blueprintContent: [
+      callout("Safety-Critical Event Gate — blueprint details", "Prioritises safety-critical events for interpretation, later feedback, learning, and scheduling."),
+      list("Inputs", ["Current Safety Risk State", "Safety & Stabilisation Behaviour", "Action Sequence Capture", "Cue Recognition & Response", "Station Simulation Engine consequence logic", "Current Simulation Validity State"]),
+      list("Triggers", ["unsafe action", "unsafe omission", "unsafe delay", "contraindicated treatment", "deterioration ignored", "escalation failure", "monitoring failure", "recovery after safety risk", "friction-contaminated safety event"]),
+      list("Outputs", ["Performance Diagnostic Engine", "Post-Station Rationale & Inquiry Register", "Adaptive Learning Engine", "Adaptive Station Scheduling Engine", "Learner Profile as weighted safety-pattern evidence only"]),
+      list("Must not", ["bypass validity checks", "infer motive", "treat one event as stable trait", "overrule Step 3 rationale inquiry"]),
+    ],
+  }),
+
+  "step2-alignment-check": card({
+    id: "step2-alignment-check",
+    categoryLabel: "INTERACTION / INTERPRETATION NODE",
+    title: "Step 1–Step 2 Alignment Check",
+    quickTitle: "Did their starting model match their performance?",
+    subtitle: "Compares before-station expectations with in-station behaviour.",
+    accent: "cyan",
+    quickViewContent: [
+      callout("Before-vs-actual comparison panel", "This compares what the learner expected or recalled before the station with what they actually did inside the station."),
+      grid("Comparison examples", [["Good plan", "", "poor execution"], ["Weak recall", "", "strong action"], ["Low uncertainty", "", "unsafe performance"], ["High uncertainty", "", "safe performance"]]),
+      text("Internal-process meaning", "This check reveals whether the issue was knowledge access, execution under pressure, task framing, confidence calibration, or self-monitoring."),
+      warning("Guardrail", "This comparison prepares Step 4 metacognitive correction, but does not complete it."),
+    ],
+    blueprintContent: [
+      callout("Step 1–Step 2 Alignment Check — blueprint details", "Processes the gap between pre-station internal model and actual station behaviour."),
+      list("Inputs from Step 1", ["initial approach", "retrieval accessibility", "uncertainty level", "available cognitive capacity", "learning momentum state"]),
+      list("Inputs from Step 2", ["action sequence", "safety behaviour", "prioritisation", "retrieval-to-action state", "cue response", "cognitive load", "simulation validity"]),
+      list("Alignment patterns", ["correct plan, poor execution", "poor plan, good adaptation", "strong recall, weak action", "weak recall, strong action", "low uncertainty, unsafe behaviour", "high uncertainty, safe behaviour", "predicted capacity stable, actual overload", "predicted overload, stable performance"]),
+      list("Outputs", ["Performance Diagnostic Engine", "Post-Station Rationale & Inquiry Register", "Learner Profile", "Adaptive Learning Engine", "Adaptive Station Scheduling Engine", "later Metacognitive Correction"]),
+      list("Must not", ["make final conclusions before Step 3", "treat mismatch as failure automatically", "ignore simulation validity", "ignore recovery"]),
+    ],
+  }),
+
+  "step2-post-station-rationale-inquiry-register": card({
+    id: "step2-post-station-rationale-inquiry-register",
+    categoryLabel: "INTERACTION / INTERPRETATION NODE",
+    title: "Post-Station Rationale & Inquiry Register",
+    quickTitle: "What still needs to be clarified?",
+    subtitle: "Stores unresolved why-did-that-happen questions.",
+    accent: "purple",
+    quickViewContent: [
+      callout("Triage board", "This register stores the important “why did that happen?” questions that Step 2 cannot safely answer by observation alone."),
+      grid("Triage board", [["Ask soon in Step 3", "", "high-value clarification"], ["Strong but unconfirmed", "", "likely pattern, needs confirmation"], ["Defer for later", "", "not worth overloading the learner now"], ["Retest in future station", "", "better tested through performance than questioning"]]),
+      text("Internal-process meaning", "The register protects uncertainty. It prevents the system from treating hypotheses as confirmed learner weaknesses."),
+      warning("Guardrail", "Not every question should be asked immediately."),
+    ],
+    blueprintContent: [
+      callout("Post-Station Rationale & Inquiry Register — blueprint details", "Stores unresolved explanations and routes them to Step 3, later correction, or future station testing."),
+      list("Inputs", ["Performance Diagnostic Engine", "Safety-Critical Event Gate", "Step 1–Step 2 Alignment Check", "Retrieval-to-Action Conversion", "Current Cognitive Load Under Performance", "Current Simulation Validity State", "Learning Momentum Engine", "Learner Engagement Profile"]),
+      list("Categories", ["Ask soon in Step 3: Questions that are high-yield, safety-relevant, or needed for interpretation.", "Strong but unconfirmed: Likely hypotheses with good evidence, but not enough to become profile truth.", "Defer for later: Questions that are relevant but would overload the learner now.", "Retest in future station: Patterns better verified through near-transfer or re-entry performance."]),
+      list("Prioritisation criteria", ["safety-critical importance", "diagnostic uncertainty", "Step 1–Step 2 mismatch", "effect on adaptive learning", "effect on station scheduling", "learner readiness", "cognitive burden", "simulation validity"]),
+      list("Outputs", ["Step 3 self-evaluation questions", "Step 4 metacognitive correction inputs", "Adaptive Learning Engine context", "Adaptive Station Scheduling Engine context", "future retesting targets"]),
+      list("Must not", ["confirm weaknesses by itself", "ask every possible question", "overload poor performers", "ignore learner momentum", "ignore validity concerns"]),
+    ],
+  }),
 });

@@ -15,30 +15,64 @@ export function LearnerExperiencePane({ currentStep = 1 }) {
 
         <div className="flex-1 min-h-0 flex flex-col items-center justify-between pt-8 pb-2">
           <div className="relative w-24 h-24 xl:w-28 xl:h-28 flex items-center justify-center">
-            <div className="absolute inset-0 rounded-full border border-sky-500/40 bg-sky-900/10 shadow-[0_0_34px_rgba(14,165,233,0.22)] animate-[pulse_3.6s_ease-in-out_infinite]" />
-            <div className="absolute inset-4 rounded-full border border-sky-400/60 bg-sky-800/20 shadow-[0_0_22px_rgba(14,165,233,0.34)] animate-[pulse_2.4s_ease-in-out_infinite]" />
-            <div className="absolute inset-8 rounded-full border-2 border-sky-300 bg-sky-700/45 shadow-[0_0_18px_rgba(14,165,233,0.62)]" />
+            <div className={cn(
+              "absolute inset-0 rounded-full border transition-all duration-500",
+              isListening
+                ? "border-sky-500/40 bg-sky-900/10 shadow-[0_0_34px_rgba(14,165,233,0.22)] animate-[pulse_3.6s_ease-in-out_infinite]"
+                : "border-slate-700/50 bg-slate-900/30 shadow-none"
+            )} />
+            <div className={cn(
+              "absolute inset-4 rounded-full border transition-all duration-500",
+              isListening
+                ? "border-sky-400/60 bg-sky-800/20 shadow-[0_0_22px_rgba(14,165,233,0.34)] animate-[pulse_2.4s_ease-in-out_infinite]"
+                : "border-slate-600/50 bg-slate-800/30"
+            )} />
+            <div className={cn(
+              "absolute inset-8 rounded-full border-2 transition-all duration-500",
+              isListening
+                ? "border-sky-300 bg-sky-700/45 shadow-[0_0_18px_rgba(14,165,233,0.62)] scale-105"
+                : "border-slate-500 bg-slate-800/70 scale-95"
+            )} />
           </div>
 
           <div className="w-full max-w-[190px] h-8 flex items-center justify-center gap-1 opacity-70">
             {[...Array(20)].map((_, i) => (
               <div
                 key={i}
-                className="voice-wave-bar w-1 rounded-full bg-sky-400 opacity-70 origin-center"
+                className={cn(
+                  "voice-wave-bar w-1 rounded-full opacity-70 transition-all duration-500 origin-center",
+                  isListening ? "bg-sky-400" : "bg-slate-600"
+                )}
                 style={{
-                  height: `${Math.max(14, Math.sin(i * 0.48) * 38 + 28)}%`,
+                  height: isListening ? `${Math.max(14, Math.sin(i * 0.48) * 38 + 28)}%` : "18%",
                   animationDelay: `${i * 48}ms`,
                   animationDuration: `${720 + (i % 6) * 95}ms`,
+                  animationPlayState: isListening ? "running" : "paused",
                 }}
               />
             ))}
           </div>
 
-          <p className="text-sm text-slate-300">Listening...</p>
+          <p className="text-sm text-slate-300">{isListening ? "Listening..." : "Paused"}</p>
 
-          <div className="w-12 h-12 rounded-full flex items-center justify-center border bg-sky-950/70 border-sky-500/50 shadow-[0_0_18px_rgba(14,165,233,0.26)]">
-            <Mic className="w-5 h-5 text-sky-100" />
-          </div>
+          <button
+            type="button"
+            aria-pressed={isListening}
+            aria-label={isListening ? "Pause microphone" : "Start microphone"}
+            onClick={() => setIsListening((current) => !current)}
+            className={cn(
+              "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 border",
+              isListening
+                ? "bg-sky-950/70 border-sky-500/50 shadow-[0_0_18px_rgba(14,165,233,0.26)] hover:bg-sky-900/70"
+                : "bg-red-950/80 border-red-500/60 shadow-[0_0_18px_rgba(239,68,68,0.2)] hover:bg-red-900/80"
+            )}
+          >
+            {isListening ? (
+              <Mic className="w-5 h-5 text-sky-100" />
+            ) : (
+              <MicOff className="w-5 h-5 text-red-100" />
+            )}
+          </button>
 
           <p className="text-center text-sm xl:text-base font-medium text-white max-w-xs leading-snug">
             “Doctor... the pain is getting worse. I feel sweaty and a bit light-headed.”

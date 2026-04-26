@@ -424,8 +424,13 @@ export function ExplanationModal({ card, onClose, returnFocusTo }) {
               )}
             </div>
             <h2 id="explanation-modal-title" className="mt-2 text-3xl font-light tracking-wide text-white">
-              {card.title}
+              {view === "quick" && card.quickTitle ? card.quickTitle : card.title}
             </h2>
+            {view === "quick" && card.quickTitle && (
+              <p className={cn("mt-2 inline-flex rounded-full border px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider", styles.border, styles.text)}>
+                {card.title}
+              </p>
+            )}
             <p className="mt-2 text-sm text-slate-400">{card.subtitle}</p>
           </div>
           <div className="flex items-center gap-2">
@@ -457,14 +462,6 @@ export function ExplanationModal({ card, onClose, returnFocusTo }) {
         </div>
 
         <div className="mt-5 grid gap-5">
-          {view === "quick" && card.quickTitle && (
-            <div className={cn("rounded-xl border p-4", styles.border, styles.bg)}>
-              <h3 className="text-xl font-semibold text-white">{card.quickTitle}</h3>
-              <p className={cn("mt-2 inline-flex rounded-full border px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider", styles.border, styles.text)}>
-                {card.title}
-              </p>
-            </div>
-          )}
           {view === "blueprint" && (
             <div className={cn("rounded-xl border p-4", styles.border, styles.bg)}>
               <h3 className="text-lg font-semibold text-white">Blueprint details</h3>

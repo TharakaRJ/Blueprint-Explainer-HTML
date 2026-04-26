@@ -43,11 +43,15 @@ export function ConnectorOverlay({ connectors, hoveredId, activeConnectorIds, co
       if (hoveredId) {
         if (activeConnectorIds.has(conn.id)) {
           isActive = true;
-          if (conn.source.includes('analytic')) colorClass = "stroke-blue-400";
-          else if (conn.source.includes('dynamic')) colorClass = "stroke-purple-400";
+          if (conn.source.includes('current')) colorClass = "stroke-purple-400";
+          else if (conn.source.includes('analytic')) colorClass = "stroke-blue-400";
           else if (conn.source.includes('profile')) colorClass = "stroke-teal-400";
           else if (conn.source.includes('station') || conn.source.includes('simulation') || conn.source.includes('ledger')) colorClass = "stroke-cyan-400";
           else if (conn.source.includes('safety') || conn.source.includes('friction') || conn.source.includes('validity')) colorClass = "stroke-amber-400";
+          else if (conn.source.includes('rationale') || conn.source.includes('inquiry') || conn.source.includes('register')) colorClass = "stroke-violet-400";
+          else if (conn.source.includes('momentum')) colorClass = "stroke-fuchsia-400";
+          else if (conn.source.includes('communication')) colorClass = "stroke-cyan-300";
+          else if (conn.source.includes('adaptive')) colorClass = "stroke-emerald-300";
           else colorClass = "stroke-emerald-400";
         }
       }

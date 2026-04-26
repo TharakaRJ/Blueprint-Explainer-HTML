@@ -13,6 +13,9 @@ const typeStyles = {
   node: "border-cyan-500/30 bg-cyan-950/20 text-cyan-100 hover:border-cyan-400/80 hover:bg-cyan-950/40 hover:shadow-[0_0_15px_rgba(34,211,238,0.28)]",
   safety: "border-amber-500/35 bg-amber-950/15 text-amber-100 hover:border-amber-400/80 hover:bg-amber-950/30 hover:shadow-[0_0_15px_rgba(245,158,11,0.24)]",
   validity: "border-yellow-500/35 bg-yellow-950/15 text-yellow-100 hover:border-yellow-400/80 hover:bg-yellow-950/30 hover:shadow-[0_0_15px_rgba(234,179,8,0.22)]",
+  inquiry: "border-violet-500/35 bg-violet-950/15 text-violet-100 hover:border-violet-400/80 hover:bg-violet-950/30 hover:shadow-[0_0_15px_rgba(139,92,246,0.24)]",
+  momentum: "border-fuchsia-500/30 bg-fuchsia-950/15 text-fuchsia-100 hover:border-fuchsia-400/80 hover:bg-fuchsia-950/30 hover:shadow-[0_0_15px_rgba(217,70,239,0.2)]",
+  communication: "border-cyan-400/35 bg-cyan-950/15 text-cyan-100 hover:border-cyan-300/80 hover:bg-cyan-950/30 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)]",
 };
 
 const badgeStyles = {
@@ -26,6 +29,9 @@ const badgeStyles = {
   node: "text-cyan-300 border-cyan-500/50",
   safety: "text-amber-300 border-amber-500/50",
   validity: "text-yellow-300 border-yellow-500/50",
+  inquiry: "text-violet-300 border-violet-500/50",
+  momentum: "text-fuchsia-300 border-fuchsia-500/50",
+  communication: "text-cyan-200 border-cyan-400/50",
 };
 
 export function ArchitectureCard({ 
@@ -34,6 +40,7 @@ export function ArchitectureCard({
   technicalLabel,
   subtitle, 
   badge, 
+  chips,
   type, 
   onMouseEnter, 
   onMouseLeave,
@@ -96,6 +103,21 @@ export function ArchitectureCard({
         </div>
       </div>
       <p className="text-xs opacity-70 leading-relaxed pr-2">{subtitle}</p>
+      {chips?.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {chips.map((chip) => (
+            <span
+              key={chip}
+              className={cn(
+                "rounded-full border bg-black/25 px-2 py-0.5 text-[9px] font-mono uppercase tracking-wider",
+                badgeStyles[type]
+              )}
+            >
+              {chip}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
