@@ -22,7 +22,7 @@ export function OverviewPage({ currentStep, onStepSelect, onNavigate }) {
   };
 
   return (
-    <div className="relative w-screen h-screen bg-[#050B14] text-slate-200 overflow-hidden font-sans">
+    <div className="relative w-screen h-screen bg-[#050B14] text-slate-200 overflow-y-auto lg:overflow-hidden font-sans">
       <button
         type="button"
         aria-label={isFullscreen ? "Exit full screen" : "Enter full screen"}
@@ -31,7 +31,7 @@ export function OverviewPage({ currentStep, onStepSelect, onNavigate }) {
       >
         {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
       </button>
-      <div className="grid grid-cols-[25%_25%_50%] h-full">
+      <div className="grid min-h-full grid-cols-1 lg:h-full lg:grid-cols-[25%_25%_50%]">
         
         {/* Left Pane */}
         <div className="h-full min-h-0">

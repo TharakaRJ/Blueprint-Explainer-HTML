@@ -1,6 +1,54 @@
 import { BookOpen, ArrowRight } from "lucide-react";
 
 export function StepOverviewPane({ currentStep = 1, onNavigate }) {
+  if (currentStep === 9) {
+    return (
+      <div className="flex flex-col h-full min-h-0 bg-slate-950/40 px-10 py-4 relative overflow-hidden">
+        <div className="flex items-center gap-2 mb-4 shrink-0">
+          <BookOpen className="w-5 h-5 text-slate-400" />
+          <h2 className="text-sm tracking-widest text-slate-300 uppercase">Step Overview</h2>
+        </div>
+
+        <div className="flex-1 min-h-0 flex flex-col justify-between max-w-3xl overflow-y-auto pr-1">
+          <div className="min-h-0">
+            <p className="mb-2 text-[10px] font-mono uppercase tracking-[0.24em] text-slate-500">Step 9 — Adaptive Station Scheduling</p>
+            <h1 className="text-[1.55rem] xl:text-[1.85rem] leading-tight font-light text-slate-100 mb-3 tracking-wide">
+              Step 9 — Adaptive Station Scheduling
+            </h1>
+
+            <div className="space-y-3 text-slate-300 leading-6 text-[0.84rem] xl:text-[0.95rem]">
+              <p>
+                Step 9 closes the completed adaptive cycle and chooses the next highest-value station pathway. It integrates evidence from the learner’s initial framing, cold performance, self-evaluation, correction, learning-format selection, format use, quick check, and re-entry performance.
+              </p>
+              <p>
+                The scheduler then chooses the next station based on adaptive value, not random rotation, fixed curriculum order, or missed checklist items alone.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <div className="bg-blue-950/20 border border-blue-900/50 rounded-xl p-3 backdrop-blur-sm">
+              <h4 className="text-blue-400 font-semibold mb-1.5 uppercase tracking-wider text-xs">Key principle</h4>
+              <p className="text-blue-200/80 text-[0.84rem] leading-5">
+                Schedule from interpreted learner-state evidence, not from raw performance or checklist labels.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-4 shrink-0 pb-1">
+            <button
+              onClick={onNavigate}
+              className="group relative inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold text-white transition-all duration-300 bg-teal-600/20 border border-teal-500/50 rounded-full hover:bg-teal-600/30 hover:shadow-[0_0_20px_rgba(20,184,166,0.3)] hover:-translate-y-0.5"
+            >
+              Continue to Intelligence Map
+              <ArrowRight className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (currentStep === 8) {
     return (
       <div className="flex flex-col h-full min-h-0 bg-slate-950/40 px-10 py-4 relative overflow-hidden">

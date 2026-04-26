@@ -12,6 +12,7 @@ export function CoreProcessFlowPane({ currentStep = 1, onStepSelect }) {
     6: "Learner uses the selected format while experience evidence is interpreted cautiously.",
     7: "Short low-stakes check of immediate target accessibility.",
     8: "Short varied station-like moment to test transfer.",
+    9: "Closes the loop and selects the next highest-value station pathway.",
   };
 
   return (
@@ -38,6 +39,8 @@ export function CoreProcessFlowPane({ currentStep = 1, onStepSelect }) {
                     ? "Quick Check"
                   : step.id === 8
                     ? "Re-Entry Station"
+                  : step.id === 9
+                    ? "Adaptive Station Scheduling"
                   : step.id === 3
                     ? "Self-Evaluation & Rationale Inquiry"
                     : step.title;
@@ -45,10 +48,10 @@ export function CoreProcessFlowPane({ currentStep = 1, onStepSelect }) {
               return (
             <div 
               key={step.id} 
-              onClick={() => step.id <= 8 && onStepSelect?.(step.id)}
+              onClick={() => step.id <= 9 && onStepSelect?.(step.id)}
               className={cn(
                 "flex items-start gap-4 transition-all duration-300",
-                step.id <= 8 ? "cursor-pointer" : "",
+                step.id <= 9 ? "cursor-pointer" : "",
                 step.id === currentStep ? "opacity-100" : step.id < currentStep ? "opacity-75 hover:opacity-90" : "opacity-40 hover:opacity-70"
               )}
             >

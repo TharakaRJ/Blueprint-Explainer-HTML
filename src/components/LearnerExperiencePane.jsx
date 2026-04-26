@@ -628,6 +628,76 @@ export function LearnerExperiencePane({ currentStep = 1 }) {
     );
   }
 
+  if (currentStep === 9) {
+    return (
+      <div className="flex flex-col h-full min-h-0 bg-slate-950 px-6 py-5 relative">
+        <div className="flex items-center gap-2 shrink-0">
+          <Maximize2 className="w-5 h-5 text-slate-400" />
+          <h2 className="text-sm tracking-widest text-slate-300 uppercase">Learner Experience</h2>
+        </div>
+
+        <div className="flex-1 min-h-0 overflow-y-auto pr-1 pt-4 pb-1">
+          <div className="rounded-xl border border-emerald-500/30 bg-emerald-950/15 p-4 shadow-[0_0_24px_rgba(16,185,129,0.12)]">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-[10px] font-mono uppercase tracking-[0.24em] text-emerald-300">Adaptive station scheduling</p>
+                <h3 className="mt-1 text-lg font-semibold text-white">Re-entry cycle complete</h3>
+              </div>
+              <span className="rounded-full border border-emerald-300/35 bg-emerald-300/10 px-2.5 py-1 text-[10px] font-mono uppercase tracking-[0.18em] text-emerald-100">
+                Step 9 of 9
+              </span>
+            </div>
+            <p className="mt-3 text-sm leading-relaxed text-slate-200">
+              Your re-entry cycle is complete. The system is now selecting the next station pathway based on the full learning cycle.
+            </p>
+          </div>
+
+          <div className="mt-4 rounded-xl border border-teal-400/35 bg-teal-950/15 p-4 shadow-[0_0_26px_rgba(20,184,166,0.12)]">
+            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-teal-300">Next station pathway</p>
+            <h4 className="mt-2 text-base font-semibold text-white">Next pathway: Near-transfer consolidation</h4>
+            <div className="mt-3 grid gap-2">
+              {[
+                ["Broad station family", "Acute care decision-making"],
+                ["Purpose", "Check whether the corrected safety trigger holds when the presentation changes."],
+                ["Challenge", "Moderate"],
+                ["Cognitive load", "Controlled"],
+                ["Transfer distance", "Near"],
+              ].map(([label, value]) => (
+                <div key={label} className="rounded-lg border border-slate-700/70 bg-slate-950/45 px-3 py-2">
+                  <p className="text-[9px] uppercase tracking-[0.18em] text-slate-500">{label}</p>
+                  <p className="mt-1 text-xs leading-relaxed text-slate-100">{value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-4 rounded-xl border border-sky-500/25 bg-sky-950/15 p-4">
+            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-sky-300">Why this pathway</p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-100">
+              This pathway is selected because the latest cycle suggests improvement, but the corrected pattern still needs stability under variation.
+            </p>
+          </div>
+
+          <div className="mt-4 grid grid-cols-[1fr_auto] gap-3">
+            <button
+              type="button"
+              className="inline-flex items-center justify-center rounded-full border border-teal-400/45 bg-teal-500/20 px-5 py-2.5 text-sm font-semibold text-teal-50 transition hover:bg-teal-500/30"
+            >
+              Start next station
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              className="rounded-full border border-slate-700/70 bg-slate-900/55 px-4 py-2.5 text-xs font-semibold text-slate-300 transition hover:bg-slate-900"
+            >
+              Pause and save pathway
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col h-full min-h-0 bg-slate-950 px-6 py-5 relative">
       <div className="flex items-center gap-2 shrink-0">
