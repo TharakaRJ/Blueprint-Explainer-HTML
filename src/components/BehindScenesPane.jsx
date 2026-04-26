@@ -10,6 +10,7 @@ import { stepFourData } from "../data/stepFourData";
 import { stepFiveData } from "../data/stepFiveData";
 import { stepSixData } from "../data/stepSixData";
 import { stepSevenData } from "../data/stepSevenData";
+import { stepEightData } from "../data/stepEightData";
 import { explanationCards } from "../data/explanationCards";
 import { cn } from "@/lib/utils";
 
@@ -26,8 +27,9 @@ export function BehindScenesPane({ currentStep = 1 }) {
   const isStepFive = currentStep === 5;
   const isStepSix = currentStep === 6;
   const isStepSeven = currentStep === 7;
-  const mapData = isStepSeven ? stepSevenData : isStepSix ? stepSixData : isStepFive ? stepFiveData : isStepFour ? stepFourData : isStepThree ? stepThreeData : stepTwoData;
-  const currentConnectors = isStepSeven ? stepSevenData.connectors : isStepSix ? stepSixData.connectors : isStepFive ? stepFiveData.connectors : isStepFour ? stepFourData.connectors : isStepThree ? stepThreeData.connectors : isStepTwo ? stepTwoData.connectors : stepOneData.connectors;
+  const isStepEight = currentStep === 8;
+  const mapData = isStepEight ? stepEightData : isStepSeven ? stepSevenData : isStepSix ? stepSixData : isStepFive ? stepFiveData : isStepFour ? stepFourData : isStepThree ? stepThreeData : stepTwoData;
+  const currentConnectors = isStepEight ? stepEightData.connectors : isStepSeven ? stepSevenData.connectors : isStepSix ? stepSixData.connectors : isStepFive ? stepFiveData.connectors : isStepFour ? stepFourData.connectors : isStepThree ? stepThreeData.connectors : isStepTwo ? stepTwoData.connectors : stepOneData.connectors;
 
   const handleMouseEnter = (id) => setHoveredId(id);
   const handleMouseLeave = () => setHoveredId(null);
@@ -173,7 +175,7 @@ export function BehindScenesPane({ currentStep = 1 }) {
     <div ref={scrollRef} className="scrollbar-none flex flex-col h-full w-full bg-slate-950/40 p-8 relative overflow-y-auto">
       
       <div ref={containerRef} className="relative flex-grow flex flex-col gap-16 max-w-6xl mx-auto w-full pt-8 pb-16">
-        {isStepTwo || isStepThree || isStepFour || isStepFive || isStepSix || isStepSeven ? renderStructuredMap(mapData) : (
+        {isStepTwo || isStepThree || isStepFour || isStepFive || isStepSix || isStepSeven || isStepEight ? renderStructuredMap(mapData) : (
         <>
         <ConnectorOverlay 
           connectors={stepOneData.connectors} 

@@ -539,6 +539,95 @@ export function LearnerExperiencePane({ currentStep = 1 }) {
     );
   }
 
+  if (currentStep === 8) {
+    return (
+      <div className="flex flex-col h-full min-h-0 bg-slate-950 px-6 py-5 relative">
+        <div className="flex items-center gap-2 shrink-0">
+          <Maximize2 className="w-5 h-5 text-slate-400" />
+          <h2 className="text-sm tracking-widest text-slate-300 uppercase">Learner Experience</h2>
+        </div>
+
+        <div className="flex-1 min-h-0 overflow-y-auto pr-1 pt-4 pb-1">
+          <div className="rounded-xl border border-cyan-500/25 bg-cyan-950/15 p-4 shadow-[0_0_24px_rgba(34,211,238,0.1)]">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-[10px] font-mono uppercase tracking-[0.24em] text-cyan-300">Short Re-Entry Station</p>
+                <h3 className="mt-1 text-lg font-semibold text-white">Use the key point in a slightly different situation.</h3>
+              </div>
+              <span className="rounded-full border border-cyan-300/35 bg-cyan-300/10 px-2.5 py-1 text-[10px] font-mono uppercase tracking-[0.18em] text-cyan-100">
+                Step 8 of 9
+              </span>
+            </div>
+            <div className="mt-3 flex items-center justify-between rounded-lg border border-slate-700/70 bg-slate-950/45 px-3 py-2">
+              <p className="text-[10px] font-mono uppercase tracking-[0.18em] text-slate-400">Short station · Focused re-entry</p>
+              <span className="h-2 w-2 rounded-full bg-teal-300 shadow-[0_0_10px_rgba(45,212,191,0.65)]" />
+            </div>
+          </div>
+
+          <div className="mt-4 rounded-xl border border-sky-500/25 bg-sky-950/15 p-4">
+            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-sky-300">Focused re-entry scenario</p>
+            <p className="mt-3 text-sm leading-relaxed text-slate-100">
+              “You are asked to assess a patient with a related presentation. The situation is not the same as before, but it tests the same key correction under station conditions.”
+            </p>
+          </div>
+
+          <div className="mt-4 grid gap-2">
+            {[
+              "Patient: I still feel tight in my chest.",
+              "Nurse: The observations have changed slightly.",
+              "Patient: I feel more light-headed now.",
+            ].map((cue) => (
+              <div key={cue} className="rounded-lg border border-slate-700/70 bg-slate-900/60 px-3 py-2.5">
+                <p className="text-xs leading-relaxed text-slate-200">{cue}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 rounded-xl border border-slate-700/70 bg-slate-900/55 p-3">
+            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-slate-500">Focused actions</p>
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              {[
+                "Assess safety first",
+                "Recheck observations",
+                "Respond to cue",
+                "Request help",
+                "Explain next step",
+              ].map((action, index) => (
+                <button
+                  key={action}
+                  type="button"
+                  className={cn(
+                    "rounded-lg border px-3 py-2.5 text-left text-xs transition",
+                    index === 0
+                      ? "border-teal-400/45 bg-teal-500/15 text-teal-50"
+                      : "border-slate-700/70 bg-slate-950/45 text-slate-300 hover:bg-slate-800/70"
+                  )}
+                >
+                  {action}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-4 rounded-xl border border-emerald-500/30 bg-emerald-950/15 p-4">
+            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-emerald-300">Brief feedback</p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-100">
+              You applied the key safety trigger more quickly in this version. The next step will use this evidence to plan your next station.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-teal-400/45 bg-teal-500/20 px-5 py-2.5 text-sm font-semibold text-teal-50 transition hover:bg-teal-500/30"
+          >
+            Continue to Step 9 Planning
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col h-full min-h-0 bg-slate-950 px-6 py-5 relative">
       <div className="flex items-center gap-2 shrink-0">
