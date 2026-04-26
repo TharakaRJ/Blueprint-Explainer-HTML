@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Mic, MicOff, Maximize2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -94,15 +94,6 @@ export function LearnerExperiencePane({ currentStep = 1 }) {
   }
 
   if (currentStep === 3) {
-    const reflectionCards = [
-      ["The station is complete", "Before seeing feedback, the learner is asked to describe how they think the station went."],
-      ["Open self-evaluation", "“The station is complete. Before seeing feedback, take a moment to describe how you think it went in your own words. What went well, what felt difficult, and what do you think you may have missed?”"],
-      ["Example learner response", "“I think I missed part of the management. I focused on the history and I probably delayed treatment. I’m not sure if I handled the stabilisation properly.”"],
-      ["Gentle domain prompt", "“You’ve explained the management part. How do you feel you handled the patient’s communication needs?”"],
-      ["Targeted clarification transition", "“I have a few more specific questions about moments in the station. These are not feedback yet. They help understand what was happening from your side before the system compares everything.”"],
-      ["Specific clarification example", "“When the patient’s condition changed, what were you thinking at that moment?”"],
-    ];
-
     return (
       <div className="flex flex-col h-full min-h-0 bg-slate-950 px-6 py-5 relative">
         <div className="flex items-center gap-2 shrink-0">
@@ -110,21 +101,103 @@ export function LearnerExperiencePane({ currentStep = 1 }) {
           <h2 className="text-sm tracking-widest text-slate-300 uppercase">Learner Experience</h2>
         </div>
 
-        <div className="flex-1 min-h-0 flex flex-col justify-between gap-2 pt-5 pb-1">
-          {reflectionCards.map(([title, body], index) => (
-            <div
-              key={title}
-              className={cn(
-                "rounded-xl border p-3",
-                index === 0
-                  ? "border-teal-500/35 bg-teal-950/20 shadow-[0_0_20px_rgba(20,184,166,0.12)]"
-                  : "border-slate-700/60 bg-slate-900/55"
-              )}
-            >
-              <p className="text-[11px] font-semibold text-slate-100">{title}</p>
-              <p className="mt-1 text-[11px] leading-relaxed text-slate-400">{body}</p>
+        <div className="flex-1 min-h-0 flex flex-col items-center justify-between gap-4 pt-6 pb-1">
+          <div className="w-full rounded-xl border border-emerald-500/25 bg-emerald-950/15 p-3 text-center shadow-[0_0_22px_rgba(16,185,129,0.12)]">
+            <div className="mb-1.5 flex items-center justify-center gap-2 text-[10px] font-mono uppercase tracking-[0.22em] text-emerald-300">
+              <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.7)]" />
+              Station complete
             </div>
-          ))}
+            <p className="text-xs leading-relaxed text-slate-300">Feedback has not been shown yet.</p>
+          </div>
+
+          <div className="text-center">
+            <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-slate-500">Open self-evaluation</p>
+            <h3 className="mt-2 text-2xl font-light leading-tight text-white">How do you think you did?</h3>
+          </div>
+
+          <div className="w-full rounded-xl border border-sky-500/25 bg-sky-950/15 p-4">
+            <div className="grid gap-2 text-sm leading-snug text-slate-300">
+              <p>What do you think went well?</p>
+              <p>What felt most difficult during the station?</p>
+              <p>Was there any moment where you felt unsure or overloaded?</p>
+              <p>Is there anything you think you missed or would change?</p>
+              <p>What do you think caused the difficult parts?</p>
+            </div>
+          </div>
+
+          <p className="text-sm text-slate-300">{isListening ? "Listening..." : "Paused"}</p>
+
+          <button
+            type="button"
+            aria-pressed={isListening}
+            aria-label={isListening ? "Pause microphone" : "Start microphone"}
+            onClick={() => setIsListening((current) => !current)}
+            className={cn(
+              "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 border",
+              isListening
+                ? "bg-teal-950/70 border-teal-500/50 shadow-[0_0_18px_rgba(20,184,166,0.24)] hover:bg-teal-900/70"
+                : "bg-red-950/80 border-red-500/60 shadow-[0_0_18px_rgba(239,68,68,0.2)] hover:bg-red-900/80"
+            )}
+          >
+            {isListening ? (
+              <Mic className="w-5 h-5 text-teal-100" />
+            ) : (
+              <MicOff className="w-5 h-5 text-red-100" />
+            )}
+          </button>
+
+          <div className="w-full rounded-xl border border-slate-700/70 bg-slate-900/55 p-3 text-center">
+            <p className="text-xs leading-relaxed text-slate-300">
+              Reflection first. A few follow-up questions may come next. Feedback comes after this.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 4) {
+    return (
+      <div className="flex flex-col h-full min-h-0 bg-slate-950 px-6 py-5 relative">
+        <div className="flex items-center gap-2 shrink-0">
+          <Maximize2 className="w-5 h-5 text-slate-400" />
+          <h2 className="text-sm tracking-widest text-slate-300 uppercase">Learner Experience</h2>
+        </div>
+
+        <div className="flex-1 min-h-0 flex flex-col justify-between gap-3 pt-5 pb-1">
+          <div className="rounded-xl border border-cyan-500/25 bg-cyan-950/15 p-3 text-center">
+            <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-cyan-300">Reviewing evidence</p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-300">Let’s compare your reflection with what happened in the station.</p>
+          </div>
+
+          <div className="rounded-xl border border-emerald-500/25 bg-emerald-950/15 p-3">
+            <h3 className="text-sm font-semibold text-emerald-100">What you got right about your self-analysis</h3>
+            <p className="mt-2 text-xs leading-relaxed text-slate-300">You recognised that the station became harder when the patient’s condition changed.</p>
+          </div>
+
+          <div className="rounded-xl border border-blue-500/25 bg-blue-950/15 p-3">
+            <h3 className="text-sm font-semibold text-blue-100">What the evidence shows differently</h3>
+            <p className="mt-2 text-xs leading-relaxed text-slate-300">One part needs recalibration: the delay was less about missing the topic and more about converting the safety cue into action under pressure.</p>
+          </div>
+
+          <div className="rounded-xl border border-violet-500/25 bg-violet-950/15 p-3">
+            <h3 className="text-sm font-semibold text-violet-100">What this suggests internally</h3>
+            <p className="mt-2 text-xs leading-relaxed text-slate-300">The support target is station handling under pressure: recognising the safety cue, acting earlier, and carrying that internal model into the next step.</p>
+          </div>
+
+          <div className="rounded-xl border border-slate-700/70 bg-slate-900/55 p-3">
+            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-slate-500">Updated internal model statement</p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-200">
+              “I recognised the diagnosis, but I need to act sooner when instability changes the priority.”
+            </p>
+          </div>
+
+          <button
+            type="button"
+            className="mx-auto rounded-full border border-teal-400/45 bg-teal-500/15 px-5 py-2 text-xs font-semibold text-teal-50 transition hover:bg-teal-500/25"
+          >
+            Continue toward Step 5 support selection
+          </button>
         </div>
       </div>
     );

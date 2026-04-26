@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BehindScenesPane } from "./BehindScenesPane";
 import { ArrowLeft, Maximize2, Minimize2 } from "lucide-react";
 
@@ -30,11 +30,13 @@ export function IntelligenceMapPage({ currentStep = 1, onNavigate }) {
         <div>
           <h1 className="text-xl font-light tracking-wide text-slate-100">BEHIND-THE-SCENES INTELLIGENCE MAP</h1>
           <p className="text-sm text-slate-400 mt-1 tracking-wider uppercase">
-            {currentStep === 3
-              ? "Step 3 — Self-Evaluation"
-              : currentStep === 2
-                ? "Step 2 — Cold Station Performance"
-                : "Step 1 — Initial Problem Framing"}
+            {currentStep === 4
+              ? "Step 4 — Metacognitive Correction and Evidence-Based Self-Recalibration"
+              : currentStep === 3
+                ? "Step 3 — Self-Evaluation & Rationale Inquiry"
+                : currentStep === 2
+                  ? "Step 2 — Cold Station Performance"
+                  : "Step 1 — Initial Problem Framing"}
           </p>
         </div>
         

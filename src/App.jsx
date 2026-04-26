@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { OverviewPage } from './components/OverviewPage'
 import { IntelligenceMapPage } from './components/IntelligenceMapPage'
 import './index.css'

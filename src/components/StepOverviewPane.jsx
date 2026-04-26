@@ -1,7 +1,49 @@
-import React from "react";
 import { BookOpen, ArrowRight } from "lucide-react";
 
 export function StepOverviewPane({ currentStep = 1, onNavigate }) {
+  if (currentStep === 4) {
+    return (
+      <div className="flex flex-col h-full min-h-0 bg-slate-950/40 px-10 py-4 relative overflow-hidden">
+        <div className="flex items-center gap-2 mb-4 shrink-0">
+          <BookOpen className="w-5 h-5 text-slate-400" />
+          <h2 className="text-sm tracking-widest text-slate-300 uppercase">Step Overview</h2>
+        </div>
+
+        <div className="flex-1 min-h-0 flex flex-col justify-between max-w-3xl overflow-y-auto pr-1">
+          <div className="min-h-0">
+            <p className="mb-2 text-[10px] font-mono uppercase tracking-[0.24em] text-slate-500">Step 4 — Metacognitive Correction</p>
+            <h1 className="text-[1.65rem] xl:text-[1.9rem] leading-tight font-light text-slate-100 mb-3 tracking-wide">Correcting the learner’s self-model</h1>
+
+            <div className="space-y-3 text-slate-300 leading-6 text-[0.86rem] xl:text-[0.96rem]">
+              <p>
+                Step 4 compares the learner’s pre-station plan, actual station behaviour, and post-station self-evaluation. It shows where the learner’s self-analysis matched the evidence, where it missed or misattributed key events, and what internal process most likely needs support before the next learning step.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <div className="bg-blue-950/20 border border-blue-900/50 rounded-xl p-3 backdrop-blur-sm">
+              <h4 className="text-blue-400 font-semibold mb-1.5 uppercase tracking-wider text-xs">Key principle</h4>
+              <p className="text-blue-200/80 text-[0.84rem] leading-5">
+                The goal is not to list missed checklist items. The goal is to help the learner understand their own performance more accurately so Step 5 can target the real internal process.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-4 shrink-0 pb-1">
+            <button
+              onClick={onNavigate}
+              className="group relative inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold text-white transition-all duration-300 bg-teal-600/20 border border-teal-500/50 rounded-full hover:bg-teal-600/30 hover:shadow-[0_0_20px_rgba(20,184,166,0.3)] hover:-translate-y-0.5"
+            >
+              Continue to Step 4 Intelligence Map
+              <ArrowRight className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (currentStep === 3) {
     return (
       <div className="flex flex-col h-full min-h-0 bg-slate-950/40 px-10 py-4 relative overflow-hidden">
@@ -12,36 +54,18 @@ export function StepOverviewPane({ currentStep = 1, onNavigate }) {
 
         <div className="flex-1 min-h-0 flex flex-col max-w-3xl">
           <div>
-            <h1 className="text-[2rem] leading-tight font-light text-slate-100 mb-4 tracking-wide">Step 3: Self-Evaluation</h1>
+            <h1 className="text-[2rem] leading-tight font-light text-slate-100 mb-4 tracking-wide">Self-Evaluation & Rationale Inquiry</h1>
 
-            <p className="text-slate-300 leading-6 text-[0.92rem] xl:text-[0.98rem]">
-              Step 3 captures what the learner believes happened after the station, before the system reveals feedback. It protects the learner’s uncorrected self-model, gently broadens reflection, clarifies only the most important rationale gaps, and prepares the evidence needed for Step 4 metacognitive correction.
-            </p>
-          </div>
-
-          <div className="mt-4 grid gap-3 md:grid-cols-2">
-            <div className="rounded-xl border border-teal-500/25 bg-teal-950/10 p-3">
-              <h4 className="text-teal-300 font-semibold mb-2 uppercase tracking-wider text-xs">What this step captures</h4>
-              <ul className="space-y-1.5 text-[0.82rem] leading-5 text-slate-300">
-                <li>What the learner thinks went well</li>
-                <li>What they think they missed</li>
-                <li>How confident or uncertain they feel</li>
-                <li>Why they think they acted, delayed, or omitted actions</li>
-                <li>Whether they noticed safety issues, communication gaps, cue-response failures, or overload</li>
-                <li>Whether they report simulation or interface friction</li>
-              </ul>
-            </div>
-
-            <div className="rounded-xl border border-slate-700/70 bg-slate-950/60 p-3">
-              <h4 className="text-slate-200 font-semibold mb-2 uppercase tracking-wider text-xs">What this step does not do</h4>
-              <ul className="space-y-1.5 text-[0.82rem] leading-5 text-slate-400">
-                <li>It does not teach</li>
-                <li>It does not correct</li>
-                <li>It does not score</li>
-                <li>It does not reveal the checklist</li>
-                <li>It does not decide the final learning format</li>
-                <li>It does not decide the final next station</li>
-              </ul>
+            <div className="space-y-3 text-slate-300 leading-6 text-[0.9rem] xl:text-[0.98rem]">
+              <p>
+                Step 3 begins after the cold station ends. Before the system gives feedback, the learner first explains how they think the station went. This captures their uncorrected self-view: what they noticed, what they missed, what they think caused the difficult parts, and how confident or uncertain they feel.
+              </p>
+              <p>
+                After that open reflection, the system asks only a few targeted, non-leading rationale questions. These questions clarify the most important unresolved “why did this happen?” hypotheses from Step 2.
+              </p>
+              <p>
+                Step 3 does not correct the learner yet. It prepares the evidence needed for Step 4 metacognitive correction.
+              </p>
             </div>
           </div>
 
@@ -49,7 +73,7 @@ export function StepOverviewPane({ currentStep = 1, onNavigate }) {
             <div className="bg-blue-950/20 border border-blue-900/50 rounded-xl p-3 backdrop-blur-sm">
               <h4 className="text-blue-400 font-semibold mb-1.5 uppercase tracking-wider text-xs">Key principle</h4>
               <p className="text-blue-200/80 text-[0.86rem] leading-5">
-                Open reflection comes first. The system captures the learner’s self-model before any feedback changes it.
+                Open reflection comes first. Targeted inquiry comes second. Correction comes later.
               </p>
             </div>
           </div>

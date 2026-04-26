@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArchitectureCard } from "./ArchitectureCard";
 import { CrossCheckNode } from "./CrossCheckNode";
 import { ConnectorOverlay } from "./ConnectorOverlay";
@@ -6,20 +6,22 @@ import { ExplanationModal } from "./ExplanationModal";
 import { stepOneData } from "../data/stepOneData";
 import { stepTwoData } from "../data/stepTwoData";
 import { stepThreeData } from "../data/stepThreeData";
+import { stepFourData } from "../data/stepFourData";
 import { explanationCards } from "../data/explanationCards";
 import { cn } from "@/lib/utils";
 
 export function BehindScenesPane({ currentStep = 1 }) {
   const containerRef = useRef(null);
   const scrollRef = useRef(null);
-  const lastInfoTriggerRef = useRef(null);
+  const [returnFocusTo, setReturnFocusTo] = useState(null);
   const [hoveredId, setHoveredId] = useState(null);
   const [lockedId, setLockedId] = useState(null);
   const [activeExplanationId, setActiveExplanationId] = useState(null);
   const isStepTwo = currentStep === 2;
   const isStepThree = currentStep === 3;
-  const mapData = isStepThree ? stepThreeData : stepTwoData;
-  const currentConnectors = isStepThree ? stepThreeData.connectors : isStepTwo ? stepTwoData.connectors : stepOneData.connectors;
+  const isStepFour = currentStep === 4;
+  const mapData = isStepFour ? stepFourData : isStepThree ? stepThreeData : stepTwoData;
+  const currentConnectors = isStepFour ? stepFourData.connectors : isStepThree ? stepThreeData.connectors : isStepTwo ? stepTwoData.connectors : stepOneData.connectors;
 
   const handleMouseEnter = (id) => setHoveredId(id);
   const handleMouseLeave = () => setHoveredId(null);
@@ -28,7 +30,7 @@ export function BehindScenesPane({ currentStep = 1 }) {
   };
   const handleInfoClick = (id, event) => {
     if (!explanationCards[id]) return;
-    lastInfoTriggerRef.current = event.currentTarget;
+    setReturnFocusTo(event.currentTarget);
     setActiveExplanationId(id);
   };
 
@@ -165,7 +167,7 @@ export function BehindScenesPane({ currentStep = 1 }) {
     <div ref={scrollRef} className="scrollbar-none flex flex-col h-full w-full bg-slate-950/40 p-8 relative overflow-y-auto">
       
       <div ref={containerRef} className="relative flex-grow flex flex-col gap-16 max-w-6xl mx-auto w-full pt-8 pb-16">
-        {isStepTwo || isStepThree ? renderStructuredMap(mapData) : (
+        {isStepTwo || isStepThree || isStepFour ? renderStructuredMap(mapData) : (
         <>
         <ConnectorOverlay 
           connectors={stepOneData.connectors} 
@@ -300,7 +302,7 @@ export function BehindScenesPane({ currentStep = 1 }) {
       <ExplanationModal
         card={explanationCards[activeExplanationId]}
         onClose={() => setActiveExplanationId(null)}
-        returnFocusTo={lastInfoTriggerRef.current}
+        returnFocusTo={returnFocusTo}
       />
     </div>
   );

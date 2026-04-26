@@ -1,5 +1,6 @@
 import { stepTwoExplanationCards } from "./stepTwoExplanationCards";
 import { stepThreeExplanationCards } from "./stepThreeExplanationCards";
+import { stepFourExplanationCards } from "./stepFourExplanationCards";
 
 const flow = (...items) => items;
 
@@ -349,4 +350,5 @@ export const explanationCards = {
   }),
   ...stepTwoExplanationCards,
   ...stepThreeExplanationCards,
+  ...stepFourExplanationCards,
 };

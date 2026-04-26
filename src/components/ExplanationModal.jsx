@@ -345,12 +345,9 @@ function RenderBlueprintSection({ section, accent }) {
 export function ExplanationModal({ card, onClose, returnFocusTo }) {
   const modalRef = useRef(null);
   const closeButtonRef = useRef(null);
-  const [view, setView] = useState("quick");
+  const [viewState, setViewState] = useState({ cardId: null, mode: "quick" });
+  const view = viewState.cardId === card?.id ? viewState.mode : "quick";
   const styles = accentStyles[card?.accent] ?? accentStyles.blue;
-
-  useEffect(() => {
-    setView("quick");
-  }, [card?.id]);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -436,7 +433,12 @@ export function ExplanationModal({ card, onClose, returnFocusTo }) {
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={() => setView((current) => (current === "quick" ? "blueprint" : "quick"))}
+              onClick={() =>
+                setViewState({
+                  cardId: card?.id,
+                  mode: view === "quick" ? "blueprint" : "quick",
+                })
+              }
               className={cn(
                 "rounded-full border px-4 py-2 text-xs font-semibold transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2",
                 styles.border,
