@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { X } from "lucide-react";
+import { AlertTriangle, ArrowDown, ArrowRight, Blocks, CheckCircle2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const accentStyles = {
@@ -40,12 +40,58 @@ const accentStyles = {
   },
 };
 
-function Section({ title, children }) {
+function Section({ title, children, className }) {
   return (
-    <section className="space-y-3">
-      {title && <h3 className="text-lg font-semibold text-slate-50">{title}</h3>}
+    <section className={cn("card-shell space-y-3", className)}>
+      {title && <h3 className="text-base font-semibold text-slate-50">{title}</h3>}
       {children}
     </section>
+  );
+}
+
+function getSectionText(section) {
+  return section.text || section.emphasis || section.reading || "";
+}
+
+function splitFlowText(value) {
+  if (!value) return [];
+  return String(value)
+    .split(/\s*(?:→|↔|\+|\/|,|\n)\s*/g)
+    .map((item) => item.trim().replace(/\.$/, ""))
+    .filter(Boolean);
+}
+
+function normalizeFormat(value = "") {
+  return value
+    .toLowerCase()
+    .replace(/[↔]/g, " compare ")
+    .replace(/[→]/g, " flow ")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function SectionFrame({ children, accent, className, tone = "default" }) {
+  const styles = accentStyles[accent] ?? accentStyles.blue;
+  const toneClass =
+    tone === "warning"
+      ? "border-amber-400/30 bg-amber-950/10"
+      : tone === "blueprint"
+        ? "border-slate-600/70 bg-slate-950/45"
+        : cn(styles.border, styles.bg);
+
+  return (
+    <div className={cn("format-body rounded-xl border p-4", toneClass, className)}>
+      {children}
+    </div>
+  );
+}
+
+function TechnicalPill({ children, accent, className }) {
+  const styles = accentStyles[accent] ?? accentStyles.blue;
+  return (
+    <span className={cn("technical-pill inline-flex max-w-full rounded-full border px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider", styles.border, styles.text, className)}>
+      {children}
+    </span>
   );
 }
 
@@ -66,17 +112,31 @@ function PlainCard({ item, accent }) {
   );
 }
 
-function MiniFlow({ items, accent }) {
+function MiniFlow({ items, accent, labelled = true }) {
   const styles = accentStyles[accent] ?? accentStyles.blue;
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flow-diagram flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-stretch" aria-label="Flow diagram">
       {items.map((item, index) => (
         <React.Fragment key={`${item}-${index}`}>
-          <span className={cn("rounded-full border px-3 py-1.5 text-xs font-medium", styles.border, styles.bg, styles.text)}>
-            {item}
+          <span className={cn("flow-node flex min-h-11 min-w-0 flex-1 items-center rounded-lg border bg-slate-950/50 px-3 py-2 text-xs font-medium leading-snug text-slate-100", styles.border)}>
+            <span className={cn("mr-2 shrink-0 rounded-full border px-1.5 py-0.5 text-[9px] font-mono", styles.border, styles.text)}>
+              {index === 0 ? "Input" : index === items.length - 1 ? "Output" : "Process"}
+            </span>
+            <span className="min-w-0">{item}</span>
           </span>
-          {index < items.length - 1 && <span className={cn("text-sm", styles.text)}>→</span>}
+          {index < items.length - 1 && (
+            <span className={cn("flow-arrow hidden items-center justify-center gap-1 text-[10px] font-mono uppercase tracking-wider sm:flex", styles.text)}>
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              {labelled && <span>then</span>}
+            </span>
+          )}
+          {index < items.length - 1 && (
+            <span className={cn("flow-arrow flex items-center gap-2 pl-3 text-[10px] font-mono uppercase tracking-wider sm:hidden", styles.text)}>
+              <ArrowDown className="h-4 w-4" aria-hidden="true" />
+              {labelled && <span>then</span>}
+            </span>
+          )}
         </React.Fragment>
       ))}
     </div>
@@ -85,8 +145,8 @@ function MiniFlow({ items, accent }) {
 
 function DataTable({ section }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-700/70">
-      <table className="w-full border-collapse text-left text-sm">
+    <div className="matrix-grid overflow-x-auto rounded-xl border border-slate-700/70">
+      <table className="w-full min-w-[520px] border-collapse text-left text-sm">
         <thead className="bg-slate-950/80 text-xs uppercase tracking-wider text-slate-400">
           <tr>
             {section.columns.map((column) => (
@@ -114,18 +174,20 @@ function DataTable({ section }) {
 
 function RenderQuickSection({ section, accent }) {
   const styles = accentStyles[accent] ?? accentStyles.blue;
+  const sectionText = getSectionText(section);
+  const normalized = normalizeFormat(sectionText);
 
   if (section.type === "callout") {
     return (
       <Section title={section.title}>
-        <div className={cn("rounded-xl border p-5", styles.border, styles.bg)}>
+        <SectionFrame accent={accent} className="core-idea-block">
           <p className="text-base leading-relaxed text-slate-100">{section.text}</p>
           {section.emphasis && (
             <p className={cn("mt-4 border-l-2 pl-4 text-sm leading-relaxed", styles.border, styles.text)}>
               {section.emphasis}
             </p>
           )}
-        </div>
+        </SectionFrame>
       </Section>
     );
   }
@@ -142,7 +204,7 @@ function RenderQuickSection({ section, accent }) {
   if (section.type === "plainGrid") {
     return (
       <Section title={section.title}>
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {section.items.map((item) => (
             <PlainCard key={`${item[0]}-${item[1]}`} item={item} accent={accent} />
           ))}
@@ -154,7 +216,7 @@ function RenderQuickSection({ section, accent }) {
   if (section.type === "contrast") {
     return (
       <Section title={section.title}>
-        <div className="rounded-xl border border-slate-700/70 bg-slate-950/50 p-4">
+        <div className="compare-panel rounded-xl border border-slate-700/70 bg-slate-950/50 p-4">
           <p className="mb-3 text-sm text-slate-300">{section.text}</p>
           <div className="grid gap-3 md:grid-cols-3">
             {section.items.map(([label, text]) => (
@@ -169,7 +231,7 @@ function RenderQuickSection({ section, accent }) {
   if (section.type === "example") {
     return (
       <Section title={section.title}>
-        <div className="rounded-xl border border-slate-700/70 bg-slate-950/70 p-4">
+        <div className="ledger-trace rounded-xl border border-slate-700/70 bg-slate-950/70 p-4">
           <div className="grid gap-3 md:grid-cols-2">
             <div>
               <p className="text-[10px] font-mono uppercase tracking-[0.18em] text-slate-500">Prompt</p>
@@ -195,10 +257,10 @@ function RenderQuickSection({ section, accent }) {
   if (section.type === "flow") {
     return (
       <Section title={section.title}>
-        <div className={cn("rounded-xl border p-4", styles.border, styles.bg)}>
+        <SectionFrame accent={accent}>
           <MiniFlow items={section.flow} accent={accent} />
           {section.text && <p className="mt-3 text-sm leading-relaxed text-slate-300">{section.text}</p>}
-        </div>
+        </SectionFrame>
       </Section>
     );
   }
@@ -206,7 +268,7 @@ function RenderQuickSection({ section, accent }) {
   if (section.type === "ladder") {
     return (
       <Section title={section.title}>
-        <div className="grid gap-2">
+        <div className="state-meter grid gap-2">
           {section.items.map(([label, text], index) => (
             <div key={label} className="grid grid-cols-[32px_1fr] gap-3 rounded-lg border border-slate-700/70 bg-slate-950/50 p-3">
               <span className={cn("flex h-8 w-8 items-center justify-center rounded-full border text-xs font-mono", styles.border, styles.text)}>
@@ -223,12 +285,37 @@ function RenderQuickSection({ section, accent }) {
     );
   }
 
-  if (section.type === "warning" || section.type === "text") {
+  if (section.type === "warning") {
     return (
       <Section title={section.title}>
-        <div className="rounded-xl border border-slate-700/70 bg-slate-950/60 p-4">
-          <p className="text-sm leading-relaxed text-slate-300">{section.text}</p>
-        </div>
+        <SectionFrame accent={accent} tone="warning" className="warning-callout flex gap-3">
+          <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-300" aria-hidden="true" />
+          <p className="text-sm leading-relaxed text-slate-200">{section.text}</p>
+        </SectionFrame>
+      </Section>
+    );
+  }
+
+  if (section.type === "text") {
+    const isSelectedFormat = /selected learning format/i.test(section.title || "");
+    const flowItems = splitFlowText(section.text);
+    const shouldRenderFlow =
+      isSelectedFormat &&
+      flowItems.length >= 2 &&
+      (section.text.includes("→") || normalized.includes("matrix") || normalized.includes("model") || normalized.includes("pathway") || normalized.includes("chain"));
+
+    return (
+      <Section title={section.title}>
+        <SectionFrame accent={accent} className={cn(shouldRenderFlow ? "flow-diagram-shell" : "")}>
+          {shouldRenderFlow ? (
+            <>
+              <MiniFlow items={flowItems.slice(0, 6)} accent={accent} />
+              <p className="sr-only">{section.text}</p>
+            </>
+          ) : (
+            <p className="text-sm leading-relaxed text-slate-300">{section.text}</p>
+          )}
+        </SectionFrame>
       </Section>
     );
   }
@@ -236,7 +323,7 @@ function RenderQuickSection({ section, accent }) {
   if (section.type === "twoColumn") {
     return (
       <Section title={section.title}>
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className="compare-panel grid gap-3 md:grid-cols-2">
           {[
             [section.leftTitle, section.leftItems],
             [section.rightTitle, section.rightItems],
@@ -277,7 +364,10 @@ function RenderQuickSection({ section, accent }) {
         <div className="rounded-xl border border-slate-700/70 bg-slate-950/50 p-4">
           <ul className="grid gap-2 text-sm text-slate-300 md:grid-cols-2">
             {section.items.map((item) => (
-              <li key={item}>• {item}</li>
+              <li key={item} className="flex gap-2">
+                <CheckCircle2 className={cn("mt-0.5 h-4 w-4 shrink-0", styles.text)} aria-hidden="true" />
+                <span>{item}</span>
+              </li>
             ))}
           </ul>
         </div>
@@ -313,7 +403,9 @@ function RenderBlueprintSection({ section, accent }) {
   if (section.type === "flow") {
     return (
       <Section title={section.title}>
-        <MiniFlow items={section.flow} accent={accent} />
+        <SectionFrame accent={accent} tone="blueprint">
+          <MiniFlow items={section.flow} accent={accent} />
+        </SectionFrame>
       </Section>
     );
   }
@@ -321,7 +413,7 @@ function RenderBlueprintSection({ section, accent }) {
   if (section.type === "compare") {
     return (
       <Section title={section.title}>
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className="compare-panel grid gap-3 md:grid-cols-2">
           <div className="rounded-xl border border-red-500/25 bg-red-950/10 p-4">
             <h4 className="text-sm font-semibold text-red-200">{section.leftLabel}</h4>
             <p className="mt-2 text-sm leading-relaxed text-slate-300">{section.leftText}</p>
@@ -336,10 +428,63 @@ function RenderBlueprintSection({ section, accent }) {
   }
 
   if (section.type === "text") {
-    return <RenderQuickSection section={section} accent={accent} />;
+    const isSelectedFormat = /selected learning format/i.test(section.title || "");
+    const flowItems = splitFlowText(section.text);
+
+    if (isSelectedFormat && flowItems.length >= 2) {
+      return (
+        <Section title={section.title}>
+          <SectionFrame accent={accent} tone="blueprint">
+            <MiniFlow items={flowItems.slice(0, 6)} accent={accent} />
+            <p className="sr-only">{section.text}</p>
+          </SectionFrame>
+        </Section>
+      );
+    }
+
+    return (
+      <Section title={section.title}>
+        <SectionFrame accent={accent} tone="blueprint">
+          <p className="text-sm leading-relaxed text-slate-300">{section.text}</p>
+        </SectionFrame>
+      </Section>
+    );
   }
 
   return <RenderQuickSection section={section} accent={accent} />;
+}
+
+function ModalHeader({ card, view, styles }) {
+  const activeTitle = view === "quick" && card.quickTitle ? card.quickTitle : card.title;
+  const roleLabel = view === "quick" ? "Explanatory card" : "Blueprint card";
+
+  return (
+    <div className="card-header min-w-0">
+      <div className="flex flex-wrap items-center gap-2">
+        <p className={cn("text-[11px] font-mono uppercase tracking-[0.24em]", styles.text)}>{card.categoryLabel}</p>
+        <TechnicalPill accent={card.accent}>{roleLabel}</TechnicalPill>
+        {card.status && (
+          <span className={cn("rounded-full border px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider", styles.border, styles.text)}>
+            {card.status}
+          </span>
+        )}
+      </div>
+      <h2 id="explanation-modal-title" className="mt-2 text-2xl font-light tracking-wide text-white sm:text-3xl">
+        {activeTitle}
+      </h2>
+      {view === "quick" && card.quickTitle && (
+        <p className={cn("mt-2 inline-flex max-w-full rounded-full border px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider", styles.border, styles.text)}>
+          {card.title}
+        </p>
+      )}
+      {view === "blueprint" && (
+        <p className={cn("mt-2 inline-flex max-w-full rounded-full border px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider", styles.border, styles.text)}>
+          {card.title}
+        </p>
+      )}
+      <p className="mt-3 max-w-4xl text-sm leading-relaxed text-slate-400">{card.subtitle}</p>
+    </div>
+  );
 }
 
 export function ExplanationModal({ card, onClose, returnFocusTo }) {
@@ -410,27 +555,9 @@ export function ExplanationModal({ card, onClose, returnFocusTo }) {
           styles.glow
         )}
       >
-        <div className={cn("flex items-start justify-between gap-6 border-b pb-5", styles.border)}>
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <p className={cn("text-[11px] font-mono uppercase tracking-[0.24em]", styles.text)}>{card.categoryLabel}</p>
-              {card.status && (
-                <span className={cn("rounded-full border px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider", styles.border, styles.text)}>
-                  {card.status}
-                </span>
-              )}
-            </div>
-            <h2 id="explanation-modal-title" className="mt-2 text-3xl font-light tracking-wide text-white">
-              {view === "quick" && card.quickTitle ? card.quickTitle : card.title}
-            </h2>
-            {view === "quick" && card.quickTitle && (
-              <p className={cn("mt-2 inline-flex rounded-full border px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider", styles.border, styles.text)}>
-                {card.title}
-              </p>
-            )}
-            <p className="mt-2 text-sm text-slate-400">{card.subtitle}</p>
-          </div>
-          <div className="flex items-center gap-2">
+        <div className={cn("flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-start sm:justify-between", styles.border)}>
+          <ModalHeader card={card} view={view} styles={styles} />
+          <div className="flex shrink-0 items-center gap-2">
             <button
               type="button"
               onClick={() =>
@@ -465,11 +592,16 @@ export function ExplanationModal({ card, onClose, returnFocusTo }) {
 
         <div className="mt-5 grid gap-5">
           {view === "blueprint" && (
-            <div className={cn("rounded-xl border p-4", styles.border, styles.bg)}>
-              <h3 className="text-lg font-semibold text-white">Blueprint details</h3>
-              <p className="mt-1 text-sm text-slate-400">
-                Technical internal architecture for presenter reference.
-              </p>
+            <div className={cn("handoff-bundle rounded-xl border p-4", styles.border, styles.bg)}>
+              <div className="flex items-start gap-3">
+                <Blocks className={cn("mt-1 h-5 w-5 shrink-0", styles.text)} aria-hidden="true" />
+                <div>
+                  <h3 className="text-lg font-semibold text-white">Blueprint details</h3>
+                  <p className="mt-1 text-sm text-slate-400">
+                    Technical internal architecture for presenter reference.
+                  </p>
+                </div>
+              </div>
             </div>
           )}
           {activeSections.map((section, index) =>
