@@ -15,6 +15,9 @@ const typeStyles = {
   inquiry: "border-violet-500/35 bg-violet-950/15 text-violet-100 hover:border-violet-400/80 hover:bg-violet-950/30 hover:shadow-[0_0_15px_rgba(139,92,246,0.24)]",
   momentum: "border-fuchsia-500/30 bg-fuchsia-950/15 text-fuchsia-100 hover:border-fuchsia-400/80 hover:bg-fuchsia-950/30 hover:shadow-[0_0_15px_rgba(217,70,239,0.2)]",
   communication: "border-cyan-400/35 bg-cyan-950/15 text-cyan-100 hover:border-cyan-300/80 hover:bg-cyan-950/30 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)]",
+  processor: "border-indigo-500/35 bg-indigo-950/15 text-indigo-100 hover:border-indigo-400/80 hover:bg-indigo-950/30 hover:shadow-[0_0_15px_rgba(99,102,241,0.24)]",
+  hypothesis: "border-violet-500/35 bg-violet-950/15 text-violet-100 hover:border-violet-400/80 hover:bg-violet-950/30 hover:shadow-[0_0_15px_rgba(139,92,246,0.24)]",
+  state: "border-purple-500/30 bg-purple-950/20 text-purple-100 hover:border-purple-400/80 hover:bg-purple-950/40 hover:shadow-[0_0_15px_rgba(168,85,247,0.3)]",
 };
 
 const badgeStyles = {
@@ -31,6 +34,9 @@ const badgeStyles = {
   inquiry: "text-violet-300 border-violet-500/50",
   momentum: "text-fuchsia-300 border-fuchsia-500/50",
   communication: "text-cyan-200 border-cyan-400/50",
+  processor: "text-indigo-300 border-indigo-500/50",
+  hypothesis: "text-violet-300 border-violet-500/50",
+  state: "text-purple-300 border-purple-500/50",
 };
 
 export function ArchitectureCard({ 
